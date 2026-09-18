@@ -1,0 +1,207 @@
+26/09/18 16:22:30 INFO SparkContext: Running Spark version 3.5.9
+26/09/18 16:22:30 INFO SparkContext: OS info Linux, 6.12.76-linuxkit, aarch64
+26/09/18 16:22:30 INFO SparkContext: Java version 17.0.20.1
+26/09/18 16:22:30 WARN NativeCodeLoader: Unable to load native-hadoop library for your platform... using builtin-java classes where applicable
+26/09/18 16:22:30 INFO ResourceUtils: ==============================================================
+26/09/18 16:22:30 INFO ResourceUtils: No custom resources configured for spark.driver.
+26/09/18 16:22:30 INFO ResourceUtils: ==============================================================
+26/09/18 16:22:30 INFO SparkContext: Submitted application: hw01-weather
+26/09/18 16:22:30 INFO ResourceProfile: Default ResourceProfile created, executor resources: Map(cores -> name: cores, amount: 1, script: , vendor: , memory -> name: memory, amount: 1024, script: , vendor: , offHeap -> name: offHeap, amount: 0, script: , vendor: ), task resources: Map(cpus -> name: cpus, amount: 1.0)
+26/09/18 16:22:30 INFO ResourceProfile: Limiting resource is cpu
+26/09/18 16:22:30 INFO ResourceProfileManager: Added ResourceProfile id: 0
+26/09/18 16:22:30 INFO SecurityManager: Changing view acls to: root
+26/09/18 16:22:30 INFO SecurityManager: Changing modify acls to: root
+26/09/18 16:22:30 INFO SecurityManager: Changing view acls groups to: 
+26/09/18 16:22:30 INFO SecurityManager: Changing modify acls groups to: 
+26/09/18 16:22:30 INFO SecurityManager: SecurityManager: authentication disabled; ui acls disabled; users with view permissions: root; groups with view permissions: EMPTY; users with modify permissions: root; groups with modify permissions: EMPTY
+26/09/18 16:22:31 INFO Utils: Successfully started service 'sparkDriver' on port 34869.
+26/09/18 16:22:31 INFO SparkEnv: Registering MapOutputTracker
+26/09/18 16:22:31 INFO SparkEnv: Registering BlockManagerMaster
+26/09/18 16:22:31 INFO BlockManagerMasterEndpoint: Using org.apache.spark.storage.DefaultTopologyMapper for getting topology information
+26/09/18 16:22:31 INFO BlockManagerMasterEndpoint: BlockManagerMasterEndpoint up
+26/09/18 16:22:31 INFO SparkEnv: Registering BlockManagerMasterHeartbeat
+26/09/18 16:22:31 INFO DiskBlockManager: Created local directory at /tmp/blockmgr-b61bd5b1-5dc8-4af5-8816-d7582b9de7c8
+26/09/18 16:22:31 INFO MemoryStore: MemoryStore started with capacity 1048.8 MiB
+26/09/18 16:22:31 INFO SparkEnv: Registering OutputCommitCoordinator
+26/09/18 16:22:31 INFO JettyUtils: Start Jetty 0.0.0.0:4040 for SparkUI
+26/09/18 16:22:31 INFO Utils: Successfully started service 'SparkUI' on port 4040.
+26/09/18 16:22:31 INFO Executor: Starting executor ID driver on host 65edcde5b876
+26/09/18 16:22:31 INFO Executor: OS info Linux, 6.12.76-linuxkit, aarch64
+26/09/18 16:22:31 INFO Executor: Java version 17.0.20.1
+26/09/18 16:22:31 INFO Executor: Starting executor with user classpath (userClassPathFirst = false): ''
+26/09/18 16:22:31 INFO Executor: Created or updated repl class loader org.apache.spark.util.MutableURLClassLoader@645349d2 for default.
+26/09/18 16:22:31 INFO Utils: Successfully started service 'org.apache.spark.network.netty.NettyBlockTransferService' on port 45907.
+26/09/18 16:22:31 INFO NettyBlockTransferService: Server created on 65edcde5b876:45907
+26/09/18 16:22:31 INFO BlockManager: Using org.apache.spark.storage.RandomBlockReplicationPolicy for block replication policy
+26/09/18 16:22:31 INFO BlockManagerMaster: Registering BlockManager BlockManagerId(driver, 65edcde5b876, 45907, None)
+26/09/18 16:22:31 INFO BlockManagerMasterEndpoint: Registering block manager 65edcde5b876:45907 with 1048.8 MiB RAM, BlockManagerId(driver, 65edcde5b876, 45907, None)
+26/09/18 16:22:31 INFO BlockManagerMaster: Registered BlockManager BlockManagerId(driver, 65edcde5b876, 45907, None)
+26/09/18 16:22:31 INFO BlockManager: Initialized BlockManager: BlockManagerId(driver, 65edcde5b876, 45907, None)
+== Step 1: raw data unchanged ==
+Raw objects uploaded: 12; total 5.99 MiB
+Prefix: s3://raw/student_01/weather/ingestion_date=2026-09-17/source/
+
+== Step 2: prepare tabular CSV from originals ==
+Prepared CSV: 210,528 data rows; 8.08 MiB; s3://raw/student_01/weather/ingestion_date=2026-09-17/prepared.csv
+
+== Step 3: read with explicit schema (inferSchema is not used) ==
+26/09/18 16:22:34 WARN MetricsConfig: Cannot locate configuration: tried hadoop-metrics2-s3a-file-system.properties,hadoop-metrics2.properties
+root
+ |-- time: timestamp (nullable = true)
+ |-- city: string (nullable = true)
+ |-- temperature_2m: decimal(5,1) (nullable = true)
+ |-- relative_humidity_2m: integer (nullable = true)
+ |-- precipitation: decimal(6,2) (nullable = true)
+
+
+== Quality checks ==
+1. Required columns are present: ['time', 'city', 'temperature_2m', 'relative_humidity_2m', 'precipitation']
+2. Rows read: 210,528 (prepared CSV: 210,528)
+3. time was not parsed in 0 rows
+4. temperature_2m outside [-90.0, 60.0] is accounted for in reject_reason below
+5. NULL share: temperature_2m 0.000000%; relative_humidity_2m 0.000000%; precipitation 0.000000%
+   Cities: 12; period: 2024-01-01 00:00:00 .. 2025-12-31 23:00:00
+26/09/18 16:22:39 WARN AbstractS3ACommitterFactory: Using standard FileOutputCommitter to commit work. This is slow and potentially unsafe.
+26/09/18 16:22:40 WARN AbstractS3ACommitterFactory: Using standard FileOutputCommitter to commit work. This is slow and potentially unsafe.
+26/09/18 16:22:40 WARN AbstractS3ACommitterFactory: Using standard FileOutputCommitter to commit work. This is slow and potentially unsafe.
+26/09/18 16:22:40 WARN AbstractS3ACommitterFactory: Using standard FileOutputCommitter to commit work. This is slow and potentially unsafe.
+
+No rejected rows; path s3a://datalake/student_01/weather/rejects contains an empty check result
+6. Reconciliation: raw 210,528 = accepted 210,528 + rejected 0
+
+== Parquet ==
+Names and types of 5 fields preserved: CSV = Parquet
+Rows: accepted = Parquet = 210,528
+Prepared CSV size: 8.08 MiB; Parquet: 1.70 MiB
+CSV/Parquet ratio: 4.75
+
+== Measurement: the same query over CSV and Parquet ==
+
+    SELECT count(*) AS observations,
+           avg(temperature_2m) AS mean_temperature
+    FROM <view>
+    WHERE city = 'Moscow'
+      AND time >= TIMESTAMP '2024-06-01 00:00:00'
+      AND time <  TIMESTAMP '2024-09-01 00:00:00'
+
+The query uses 3 of 5 fields. The schema is defined before the timer starts; the timer covers execution (.first()), not DataFrame construction.
+This is not a cold start: checks and Parquet writing have already read the data. Neither DataFrame is cached in Spark: every CSV run re-reads and parses the object.
+CSV      first run     :   0.470 s; {'observations': 2208, 'mean_temperature': Decimal('20.10503')}
+PARQUET  first run     :   0.153 s; {'observations': 2208, 'mean_temperature': Decimal('20.10503')}
+PARQUET  repeat 2      :   0.082 s; {'observations': 2208, 'mean_temperature': Decimal('20.10503')}
+CSV      repeat 2      :   0.240 s; {'observations': 2208, 'mean_temperature': Decimal('20.10503')}
+CSV      repeat 3      :   0.185 s; {'observations': 2208, 'mean_temperature': Decimal('20.10503')}
+PARQUET  repeat 3      :   0.093 s; {'observations': 2208, 'mean_temperature': Decimal('20.10503')}
+CSV = Parquet results in all measurements.
+Time depends on cache, warm-up, and laptop resources; a format speedup is not guaranteed at this volume.
+
+== Iceberg ==
+Batch 1 (time < 2025-01-01 00:00:00): 105,408 rows
+Batch 2 (time >= 2025-01-01 00:00:00): 105,120 rows
+Batch sum = accepted rows: 210,528
+26/09/18 16:22:46 WARN JdbcCatalog: JDBC catalog is initialized without view support. To auto-migrate the database's schema and enable view support, set jdbc.schema-version=V1
+
+-- Write 1: CTAS, time < 2025-01-01 00:00:00
+Rows: 105,408; new snapshots: [4992429410746976373]
+
+-- Write 2: INSERT, time >= 2025-01-01 00:00:00
+Rows: 210,528; new snapshots: [256367815133047278]
+Reconciliation: Iceberg 210,528 = accepted 210,528; pair (city, time) is unique: no duplicates
+
+-- Snapshot history
++-------------------+-----------------------+---------+-------------+-------------+
+|snapshot_id        |committed_at           |operation|total_records|added_records|
++-------------------+-----------------------+---------+-------------+-------------+
+|1683485453863271234|2026-09-18 16:08:10.799|overwrite|105408       |105408       |
+|5892673281667954445|2026-09-18 16:08:16.624|append   |210528       |105120       |
+|8611983048728512972|2026-09-18 16:09:03.616|overwrite|105408       |105408       |
+|6090014615143315104|2026-09-18 16:09:07.483|append   |210528       |105120       |
+|4992429410746976373|2026-09-18 16:22:57.432|overwrite|105408       |105408       |
+|256367815133047278 |2026-09-18 16:23:03.052|append   |210528       |105120       |
++-------------------+-----------------------+---------+-------------+-------------+
+
+-- Schema from Iceberg metadata
++--------------------+------------+-------+
+|col_name            |data_type   |comment|
++--------------------+------------+-------+
+|time                |timestamp   |NULL   |
+|city                |string      |NULL   |
+|temperature_2m      |decimal(5,1)|NULL   |
+|relative_humidity_2m|int         |NULL   |
+|precipitation       |decimal(6,2)|NULL   |
+|                    |            |       |
+|# Partitioning      |            |       |
+|Part 0              |city        |       |
+|Part 1              |months(time)|       |
++--------------------+------------+-------+
+
+
+== Spark query to Iceberg (equivalent to the Trino query in queries.sql) ==
++------------+----------------+
+|observations|mean_temperature|
++------------+----------------+
+|2208        |20.105027       |
++------------+----------------+
+
+== Research question: daily temperature profile (UTC), Spark ==
++-----------+--------+----------------+
+|city       |hour_utc|mean_temperature|
++-----------+--------+----------------+
+|Moscow     |0       |5.28            |
+|Moscow     |1       |4.85            |
+|Moscow     |2       |4.77            |
+|Moscow     |3       |4.95            |
+|Moscow     |4       |5.41            |
+|Moscow     |5       |6.15            |
+|Moscow     |6       |7.04            |
+|Moscow     |7       |7.95            |
+|Moscow     |8       |8.77            |
+|Moscow     |9       |9.44            |
+|Moscow     |10      |9.89            |
+|Moscow     |11      |10.23           |
+|Moscow     |12      |10.32           |
+|Moscow     |13      |10.45           |
+|Moscow     |14      |10.12           |
+|Moscow     |15      |9.60            |
+|Moscow     |16      |8.94            |
+|Moscow     |17      |8.22            |
+|Moscow     |18      |7.56            |
+|Moscow     |19      |7.07            |
+|Moscow     |20      |6.63            |
+|Moscow     |21      |6.22            |
+|Moscow     |22      |5.88            |
+|Moscow     |23      |5.58            |
+|Vladivostok|0       |6.79            |
+|Vladivostok|1       |7.73            |
+|Vladivostok|2       |8.48            |
+|Vladivostok|3       |9.10            |
+|Vladivostok|4       |9.54            |
+|Vladivostok|5       |9.71            |
+|Vladivostok|6       |9.68            |
+|Vladivostok|7       |9.35            |
+|Vladivostok|8       |8.71            |
+|Vladivostok|9       |8.08            |
+|Vladivostok|10      |7.52            |
+|Vladivostok|11      |7.09            |
+|Vladivostok|12      |6.77            |
+|Vladivostok|13      |6.60            |
+|Vladivostok|14      |6.36            |
+|Vladivostok|15      |6.16            |
+|Vladivostok|16      |5.95            |
+|Vladivostok|17      |5.75            |
+|Vladivostok|18      |5.57            |
+|Vladivostok|19      |5.39            |
+|Vladivostok|20      |5.25            |
+|Vladivostok|21      |5.27            |
+|Vladivostok|22      |5.51            |
+|Vladivostok|23      |6.04            |
++-----------+--------+----------------+
+
+
+================ SUMMARY FOR report.md ================
+Prepared CSV rows:              210,528
+Accepted / rejected:            210,528 / 0
+CSV / Parquet size, MiB:        8.08 / 1.70
+Batch 1 / batch 2:              105,408 / 105,120
+Iceberg table:                  lakehouse.student_01.weather
+====================================================

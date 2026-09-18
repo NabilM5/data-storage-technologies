@@ -1,0 +1,36 @@
+=== s3://raw/student_01/weather/ ===
+     8,473,160 B  s3://raw/student_01/weather/ingestion_date=2026-09-17/prepared.csv
+       522,561 B  s3://raw/student_01/weather/ingestion_date=2026-09-17/source/Arkhangelsk.csv
+       521,902 B  s3://raw/student_01/weather/ingestion_date=2026-09-17/source/Astrakhan.csv
+       527,268 B  s3://raw/student_01/weather/ingestion_date=2026-09-17/source/Irkutsk.csv
+       523,214 B  s3://raw/student_01/weather/ingestion_date=2026-09-17/source/Kazan.csv
+       525,754 B  s3://raw/student_01/weather/ingestion_date=2026-09-17/source/Krasnoyarsk.csv
+       521,943 B  s3://raw/student_01/weather/ingestion_date=2026-09-17/source/Moscow.csv
+       523,554 B  s3://raw/student_01/weather/ingestion_date=2026-09-17/source/Murmansk.csv
+       525,863 B  s3://raw/student_01/weather/ingestion_date=2026-09-17/source/Novosibirsk.csv
+       520,668 B  s3://raw/student_01/weather/ingestion_date=2026-09-17/source/Saint_Petersburg.csv
+       521,692 B  s3://raw/student_01/weather/ingestion_date=2026-09-17/source/Sochi.csv
+       523,654 B  s3://raw/student_01/weather/ingestion_date=2026-09-17/source/Vladivostok.csv
+       524,239 B  s3://raw/student_01/weather/ingestion_date=2026-09-17/source/Yekaterinburg.csv
+  -- objects: 13; total: 14,755,472 B (14.07 MiB)
+
+=== s3://datalake/student_01/weather/ ===
+             0 B  s3://datalake/student_01/weather/parquet/_SUCCESS
+       149,577 B  s3://datalake/student_01/weather/parquet/city=Arkhangelsk/part-00000-aceadfb7-5447-42b7-a31f-31b930b5d2fb.c000.snappy.parquet
+       146,955 B  s3://datalake/student_01/weather/parquet/city=Astrakhan/part-00000-aceadfb7-5447-42b7-a31f-31b930b5d2fb.c000.snappy.parquet
+       148,519 B  s3://datalake/student_01/weather/parquet/city=Irkutsk/part-00000-aceadfb7-5447-42b7-a31f-31b930b5d2fb.c000.snappy.parquet
+       148,955 B  s3://datalake/student_01/weather/parquet/city=Kazan/part-00000-aceadfb7-5447-42b7-a31f-31b930b5d2fb.c000.snappy.parquet
+       149,630 B  s3://datalake/student_01/weather/parquet/city=Krasnoyarsk/part-00000-aceadfb7-5447-42b7-a31f-31b930b5d2fb.c000.snappy.parquet
+       149,290 B  s3://datalake/student_01/weather/parquet/city=Moscow/part-00000-aceadfb7-5447-42b7-a31f-31b930b5d2fb.c000.snappy.parquet
+        20,134 B  s3://datalake/student_01/weather/parquet/city=Murmansk/part-00000-aceadfb7-5447-42b7-a31f-31b930b5d2fb.c000.snappy.parquet
+       129,210 B  s3://datalake/student_01/weather/parquet/city=Murmansk/part-00001-aceadfb7-5447-42b7-a31f-31b930b5d2fb.c000.snappy.parquet
+       149,704 B  s3://datalake/student_01/weather/parquet/city=Novosibirsk/part-00001-aceadfb7-5447-42b7-a31f-31b930b5d2fb.c000.snappy.parquet
+       149,923 B  s3://datalake/student_01/weather/parquet/city=Saint_Petersburg/part-00001-aceadfb7-5447-42b7-a31f-31b930b5d2fb.c000.snappy.parquet
+       147,583 B  s3://datalake/student_01/weather/parquet/city=Sochi/part-00001-aceadfb7-5447-42b7-a31f-31b930b5d2fb.c000.snappy.parquet
+       145,958 B  s3://datalake/student_01/weather/parquet/city=Vladivostok/part-00001-aceadfb7-5447-42b7-a31f-31b930b5d2fb.c000.snappy.parquet
+       131,057 B  s3://datalake/student_01/weather/parquet/city=Yekaterinburg/part-00001-aceadfb7-5447-42b7-a31f-31b930b5d2fb.c000.snappy.parquet
+        17,555 B  s3://datalake/student_01/weather/parquet/city=Yekaterinburg/part-00002-aceadfb7-5447-42b7-a31f-31b930b5d2fb.c000.snappy.parquet
+             0 B  s3://datalake/student_01/weather/rejects/_SUCCESS
+            74 B  s3://datalake/student_01/weather/rejects/part-00000-e0d30f52-daa5-4b12-98d1-51ee03642b7f-c000.csv
+  -- objects: 17; total: 1,784,124 B (1.70 MiB)
+
