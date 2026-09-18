@@ -1,12 +1,9 @@
-"""HW 1. raw -> validation -> Parquet -> Iceberg for the Open-Meteo public source.
+"""HW 1. raw -> validation -> Parquet -> Iceberg (Open-Meteo).
 
-Run from the infra/ directory after download_source.sh:
+Run from infra/ after download_source.sh:
     docker compose exec -T spark spark-submit /scripts/hw01/pipeline.py
-
-The script is idempotent: rerunning it gives the same final row count and does
-not create duplicates. Raw objects are overwritten with the same bytes, Parquet
-is written in overwrite mode, and the Iceberg table is recreated with
-CREATE OR REPLACE and receives exactly two data writes.
+Idempotent: raw and Parquet are overwritten, the table is recreated with
+CREATE OR REPLACE and gets exactly two writes.
 """
 
 import io
@@ -16,7 +13,6 @@ import time
 import boto3
 from pyspark.sql import SparkSession, functions as F, types as T
 
-# --- Addresses and names --------------------------------------------------
 STUDENT = "student_01"
 DATASET = "weather"
 INGESTION_DATE = "2026-09-17"
@@ -38,10 +34,7 @@ TABLE = f"lakehouse.{STUDENT}.{DATASET}"
 # Boundary between two non-overlapping batches: 2024 and 2025.
 BOUNDARY = "2025-01-01 00:00:00"
 
-# --- Explicit schema ------------------------------------------------------
-# CSV does not store types. Types are defined here; inferSchema is not used.
-# temperature_2m is stored as DECIMAL, not DOUBLE: this gives the same AVG
-# in Spark and Trino without scale differences.
+# Explicit types, inferSchema is not used. DECIMAL keeps AVG comparable in Spark and Trino.
 WEATHER_SCHEMA = T.StructType([
     T.StructField("time", T.TimestampType()),
     T.StructField("city", T.StringType()),
@@ -52,13 +45,10 @@ WEATHER_SCHEMA = T.StructType([
 COLUMNS = [f.name for f in WEATHER_SCHEMA.fields]
 COLUMN_LIST = ", ".join(COLUMNS)
 
-# Physical measurement limits, not "nice-looking" values.
-# Negative temperature is valid: it is not a data error.
+# Physical limits; negative temperature is valid.
 TEMP_MIN, TEMP_MAX = -90.0, 60.0
 
-# The same analytical query for CSV and Parquet.
-# It reads 3 of 5 fields and one city: both column pruning and partition
-# pruning are visible.
+# Same query for CSV and Parquet: 3 of 5 fields, one city.
 QUERY = """
     SELECT count(*) AS observations,
            avg(temperature_2m) AS mean_temperature
@@ -84,7 +74,6 @@ def dir_size_mb(spark, path):
     return summary.getLength() / 1024 / 1024
 
 
-# --- Step 1. Raw data unchanged -------------------------------------------
 def upload_raw(s3):
     """Store original Open-Meteo files in S3 as-is, without edits."""
     if not os.path.isdir(LOCAL_RAW_DIR):
@@ -106,15 +95,9 @@ def upload_raw(s3):
     return files
 
 
-# --- Step 2. Prepare tabular CSV ------------------------------------------
 def prepare_csv(s3, files):
-    """Open-Meteo returns CSV with a metadata block before the header row.
-
-    The original is left untouched: a separate reproducible step reads raw
-    objects, finds the data header row (starts with 'time,'), adds the city
-    column, and builds one tabular CSV. Source column names include units
-    ('temperature_2m (°C)'), so fields are matched by prefix.
-    """
+    """Build one tabular CSV from the raw objects; originals are not modified.
+    The header row is found by the 'time,' prefix, columns by name prefix."""
     source_fields = ["time", "temperature_2m", "relative_humidity_2m", "precipitation"]
     out = io.StringIO()
     out.write(",".join(COLUMNS) + "\n")
@@ -161,7 +144,6 @@ def prepare_csv(s3, files):
     return written
 
 
-# --- Step 3. Quality checks -----------------------------------------------
 def reject_reason_column():
     """First matching rejection reason; NULL = row accepted."""
     temp = F.col("temperature_2m")
@@ -190,9 +172,9 @@ def validate(df, expected_rows):
     flagged = df.withColumn("reject_reason", reject_reason_column())
     metrics = flagged.agg(
         F.count("*").alias("rows"),
-        # 3. The time column is parsed by the schema; unparsable values become null.
+        # 3. time parsed by the schema; unparsable -> null.
         F.sum(F.when(F.col("time").isNull(), 1).otherwise(0)).alias("time_unparsed"),
-        # 5. NULL share in the key measure field.
+        # 5. NULL share.
         F.sum(F.when(F.col("temperature_2m").isNull(), 1).otherwise(0)).alias("temp_null"),
         F.sum(F.when(F.col("relative_humidity_2m").isNull(), 1).otherwise(0)).alias("hum_null"),
         F.sum(F.when(F.col("precipitation").isNull(), 1).otherwise(0)).alias("prec_null"),
@@ -220,7 +202,7 @@ def validate(df, expected_rows):
     rejected = flagged.filter(F.col("reject_reason").isNotNull())
     accepted = flagged.filter(F.col("reject_reason").isNull()).select(*COLUMNS)
 
-    # Store rejected rows with original values and the reason.
+    # Rejected rows with original values and reason.
     (rejected.write.mode("overwrite").option("header", True).csv(REJECT_PATH))
     rejected_count = metrics.rejected
     accepted_count = metrics.rows - rejected_count
@@ -239,11 +221,9 @@ def validate(df, expected_rows):
     return accepted, accepted_count, rejected_count
 
 
-# --- Step 4. Parquet and measurement --------------------------------------
 def to_parquet(spark, accepted, accepted_count):
     print("\n== Parquet ==")
-    # Partition by city: 12 values, and queries filter by city.
-    # Do not partition by time: ~17,500 unique hours would create small files.
+    # Partition by city (12 values, query filter), not by time (~17,500 small files).
     (accepted.write.mode("overwrite").option("compression", "snappy")
      .partitionBy("city").parquet(PARQUET_PATH))
 
@@ -297,7 +277,6 @@ def measure(spark, accepted, parquet_df):
           "a format speedup is not guaranteed at this volume.")
 
 
-# --- Step 5. Iceberg: two non-overlapping writes ---------------------------
 def snapshot_ids(spark):
     return {r.snapshot_id for r in
             spark.sql(f"SELECT snapshot_id FROM {TABLE}.snapshots").collect()}
@@ -348,7 +327,7 @@ def to_iceberg(spark, parquet_df, accepted_count):
     after_second = snapshot_ids(spark)
     print(f"Rows: {final.rows:,}; new snapshots: {sorted(after_second - after_first)}")
 
-    # Idempotency: rerunning must give the same final result without duplicates.
+    # Idempotency: same final count, no duplicates.
     if final.rows != accepted_count:
         raise ValueError(f"Final {final.rows} != accepted {accepted_count}: "
                          "duplicates from repeated inserts are possible")
@@ -370,13 +349,9 @@ def to_iceberg(spark, parquet_df, accepted_count):
     return split.batch_1, split.batch_2
 
 
-# --- Step 6. Spark query for reconciliation with Trino ---------------------
 def spark_answer(spark):
     print("\n== Spark query to Iceberg (equivalent to the Trino query in queries.sql) ==")
-    # Spark widens avg(decimal(p,s)) to decimal(p+4, s+4); Trino keeps decimal(p,s).
-    # Casting to decimal(14,2) here gives decimal(18,6) in Spark, the same scale
-    # as avg(CAST(... AS decimal(18,6))) in Trino, so the outputs compare digit
-    # for digit.
+    # decimal(14,2): Spark avg -> decimal(18,6), same scale as Trino's avg(decimal(18,6)).
     spark.sql(f"""
         SELECT count(*) AS observations,
                avg(CAST(temperature_2m AS decimal(14,2))) AS mean_temperature
@@ -420,9 +395,7 @@ def main():
         df.printSchema()
 
         accepted, accepted_count, rejected_count = validate(df, prepared_rows)
-        # Not cached on purpose: the measurement below must read and parse the
-        # CSV object on every run; a persisted DataFrame would measure Spark
-        # memory, not the CSV format.
+        # Not cached: the measurement below must read the CSV, not Spark memory.
 
         parquet_df, csv_mb, pq_mb = to_parquet(spark, accepted, accepted_count)
         measure(spark, accepted, parquet_df)
