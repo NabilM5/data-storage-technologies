@@ -1,0 +1,13 @@
+logs/
+data/*.zip
+data/*.csv.zip
+dbt/target/
+dbt/dbt_packages/
+dbt/logs/
+dbt/.user.yml
+__pycache__/
+*.pyc
+.DS_Store
+.env
+anaconda_projects/
+.ipynb_checkpoints/
