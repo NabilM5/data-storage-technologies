@@ -1,0 +1,4 @@
+ride_id,rideable_type,started_at,ended_at,start_station_name,start_station_id,end_station_name,end_station_id,start_lat,start_lng,end_lat,end_lng,member_casual
+3307903EE036C265,classic_bike,2026-08-06 00:05:10.073,2026-08-06 00:15:44.001,River St & 1 St,HB609,Warren St,JC006,40.73721535335381,-74.02886540972803,40.7211236,-74.03805095,member
+D8ACB1529ADA244E,classic_bike,2026-08-06 00:28:31.036,2026-08-06 00:42:55.228,River St & 1 St,HB609,Grove St PATH,JC115,40.73721535335381,-74.02886540972803,40.71941,-74.04309,casual
+45B46CD3774437D9,classic_bike,2026-08-06 00:39:53.764,2026-08-06 00:54:55.399,River St & 1 St,HB609,Dr. Lena Edwards Park,JC117,40.73721535335381,-74.02886540972803,40.713203,-74.058261,casual

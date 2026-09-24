@@ -1,0 +1,56 @@
+name: hw02-elt
+
+services:
+  postgres:
+    image: postgres:16.9
+    environment:
+      POSTGRES_USER: dwh
+      POSTGRES_PASSWORD: dwh
+      POSTGRES_DB: dwh
+    ports:
+      - "127.0.0.1:5433:5432"
+    volumes:
+      - pg_data:/var/lib/postgresql/data
+      - ./init-db:/docker-entrypoint-initdb.d:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U dwh -d dwh"]
+      interval: 5s
+      timeout: 3s
+      retries: 12
+
+  airflow:
+    build: .
+    # standalone = api-server, scheduler, dag-processor and triggerer in one container
+    command: standalone
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      AIRFLOW__CORE__EXECUTOR: LocalExecutor
+      AIRFLOW__CORE__LOAD_EXAMPLES: "false"
+      AIRFLOW__CORE__DAGS_ARE_PAUSED_AT_CREATION: "false"
+      AIRFLOW__CORE__SIMPLE_AUTH_MANAGER_ALL_ADMINS: "true"
+      AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://airflow:airflow@postgres:5432/airflow
+      AIRFLOW__API_AUTH__JWT_SECRET: hw02-local-dev-secret
+      AIRFLOW__CORE__EXECUTION_API_SERVER_URL: http://localhost:8080/execution/
+      AIRFLOW__SCHEDULER__DAG_DIR_LIST_INTERVAL: "30"
+      # DWH connection for the loader, dbt and publish
+      DWH_HOST: postgres
+      DWH_PORT: "5432"
+      DWH_DB: dwh
+      DWH_USER: dwh
+      DWH_PASSWORD: dwh
+      DBT_PROFILES_DIR: /opt/airflow/dbt
+      DBT_PROJECT_DIR: /opt/airflow/dbt
+    ports:
+      - "127.0.0.1:8080:8080"
+    volumes:
+      - ./dags:/opt/airflow/dags
+      - ./dbt:/opt/airflow/dbt
+      - ./loader:/opt/airflow/loader
+      - ./data:/opt/airflow/data
+      - ./logs:/opt/airflow/logs
+    mem_limit: 3g
+
+volumes:
+  pg_data:

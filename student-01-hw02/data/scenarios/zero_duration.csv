@@ -1,0 +1,2 @@
+ride_id,rideable_type,started_at,ended_at,start_station_name,start_station_id,end_station_name,end_station_id,start_lat,start_lng,end_lat,end_lng,member_casual
+TEST0000ZERODUR1,classic_bike,2026-08-05 00:16:14.867,2026-08-05 00:16:14.867,Grove St PATH,JC115,Brunswick & 6th,JC081,40.71941,-74.04309,40.72601172964625,-74.05038893222809,member

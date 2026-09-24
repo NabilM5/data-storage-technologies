@@ -1,0 +1,26 @@
+name: hw02_dwh
+version: "1.0.0"
+profile: hw02_dwh
+
+model-paths: ["models"]
+test-paths: ["tests"]
+macro-paths: ["macros"]
+target-path: "target"
+clean-targets: ["target", "dbt_packages"]
+
+# Processed interval; the DAG overrides it with --vars.
+vars:
+  date_from: "2026-08-03"
+  date_to: "2026-08-09"
+
+models:
+  hw02_dwh:
+    staging:
+      +schema: stg
+      +materialized: view
+    dds:
+      +schema: dds
+      +materialized: table
+    marts:
+      +schema: mart_candidate
+      +materialized: table

@@ -1,0 +1,112 @@
+== Q1. Trips per day and station for the week, with member share ==
+ calendar_date | station_id |                 station_name                 |    area     | trips | member_trips | member_pct 
+---------------+------------+----------------------------------------------+-------------+-------+--------------+------------
+ 2026-08-03    | HB103      | South Waterfront Walkway - Sinatra Dr & 1 St | Hoboken     |    57 |           42 |       73.7
+ 2026-08-03    | HB107      | Hudson Pl & Hoboken Terminal                 | Hoboken     |    18 |           14 |       77.8
+ 2026-08-03    | HB609      | River St & 1 St                              | Hoboken     |    94 |           75 |       79.8
+ 2026-08-03    | JC009      | Hamilton Park                                | Jersey City |    50 |           39 |       78.0
+ 2026-08-03    | JC109      | Bergen Ave & Sip Ave                         | Jersey City |    59 |           47 |       79.7
+ 2026-08-03    | JC115      | Grove St PATH                                | Jersey City |   128 |          116 |       90.6
+ 2026-08-04    | HB103      | South Waterfront Walkway - Sinatra Dr & 1 St | Hoboken     |    79 |           55 |       69.6
+ 2026-08-04    | HB107      | Hudson Pl & Hoboken Terminal                 | Hoboken     |    82 |           59 |       72.0
+ 2026-08-04    | HB609      | River St & 1 St                              | Hoboken     |   155 |          116 |       74.8
+ 2026-08-04    | JC009      | Hamilton Park                                | Jersey City |    82 |           56 |       68.3
+ 2026-08-04    | JC109      | Bergen Ave & Sip Ave                         | Jersey City |    87 |           78 |       89.7
+ 2026-08-04    | JC115      | Grove St PATH                                | Jersey City |   213 |          186 |       87.3
+ 2026-08-05    | HB103      | South Waterfront Walkway - Sinatra Dr & 1 St | Hoboken     |    75 |           61 |       81.3
+ 2026-08-05    | HB107      | Hudson Pl & Hoboken Terminal                 | Hoboken     |    85 |           67 |       78.8
+ 2026-08-05    | HB609      | River St & 1 St                              | Hoboken     |   120 |           93 |       77.5
+ 2026-08-05    | JC009      | Hamilton Park                                | Jersey City |    65 |           50 |       76.9
+ 2026-08-05    | JC109      | Bergen Ave & Sip Ave                         | Jersey City |    67 |           56 |       83.6
+ 2026-08-05    | JC115      | Grove St PATH                                | Jersey City |   165 |          145 |       87.9
+ 2026-08-06    | HB103      | South Waterfront Walkway - Sinatra Dr & 1 St | Hoboken     |    85 |           55 |       64.7
+ 2026-08-06    | HB107      | Hudson Pl & Hoboken Terminal                 | Hoboken     |    89 |           69 |       77.5
+ 2026-08-06    | HB609      | River St & 1 St                              | Hoboken     |   135 |           90 |       66.7
+ 2026-08-06    | JC009      | Hamilton Park                                | Jersey City |    90 |           72 |       80.0
+ 2026-08-06    | JC109      | Bergen Ave & Sip Ave                         | Jersey City |    89 |           72 |       80.9
+ 2026-08-06    | JC115      | Grove St PATH                                | Jersey City |   204 |          158 |       77.5
+ 2026-08-07    | HB103      | South Waterfront Walkway - Sinatra Dr & 1 St | Hoboken     |    54 |           36 |       66.7
+ 2026-08-07    | HB107      | Hudson Pl & Hoboken Terminal                 | Hoboken     |    65 |           35 |       53.8
+ 2026-08-07    | HB609      | River St & 1 St                              | Hoboken     |    97 |           69 |       71.1
+ 2026-08-07    | JC009      | Hamilton Park                                | Jersey City |    83 |           59 |       71.1
+ 2026-08-07    | JC109      | Bergen Ave & Sip Ave                         | Jersey City |    99 |           79 |       79.8
+ 2026-08-07    | JC115      | Grove St PATH                                | Jersey City |   157 |          127 |       80.9
+ 2026-08-08    | HB103      | South Waterfront Walkway - Sinatra Dr & 1 St | Hoboken     |    89 |           40 |       44.9
+ 2026-08-08    | HB107      | Hudson Pl & Hoboken Terminal                 | Hoboken     |    79 |           50 |       63.3
+ 2026-08-08    | HB609      | River St & 1 St                              | Hoboken     |    93 |           58 |       62.4
+ 2026-08-08    | JC009      | Hamilton Park                                | Jersey City |    89 |           52 |       58.4
+ 2026-08-08    | JC109      | Bergen Ave & Sip Ave                         | Jersey City |    84 |           52 |       61.9
+ 2026-08-08    | JC115      | Grove St PATH                                | Jersey City |   184 |          130 |       70.7
+ 2026-08-09    | HB103      | South Waterfront Walkway - Sinatra Dr & 1 St | Hoboken     |    81 |           39 |       48.1
+ 2026-08-09    | HB107      | Hudson Pl & Hoboken Terminal                 | Hoboken     |    60 |           34 |       56.7
+ 2026-08-09    | HB609      | River St & 1 St                              | Hoboken     |   105 |           54 |       51.4
+ 2026-08-09    | JC009      | Hamilton Park                                | Jersey City |    66 |           50 |       75.8
+ 2026-08-09    | JC109      | Bergen Ave & Sip Ave                         | Jersey City |    81 |           52 |       64.2
+ 2026-08-09    | JC115      | Grove St PATH                                | Jersey City |   144 |          107 |       74.3
+(42 rows)
+
+== Q2. Weekday vs weekend: trips and average duration by area and rider type ==
+    area     | member_casual | day_type | trips | avg_duration_min | electric_pct 
+-------------+---------------+----------+-------+------------------+--------------
+ Hoboken     | casual        | weekday  |   354 |             10.4 |         65.0
+ Hoboken     | casual        | weekend  |   232 |             16.5 |         60.8
+ Hoboken     | member        | weekday  |   936 |              6.9 |         62.6
+ Hoboken     | member        | weekend  |   275 |              9.6 |         64.0
+ Jersey City | casual        | weekday  |   298 |              9.5 |         72.5
+ Jersey City | casual        | weekend  |   205 |             15.3 |         72.2
+ Jersey City | member        | weekday  |  1340 |              6.7 |         55.2
+ Jersey City | member        | weekend  |   443 |              8.1 |         55.3
+(8 rows)
+
+== Q3. Control cell: 2026-08-05 x JC115 (compare with data/independent_check.py) ==
+ calendar_date | station_id | member_casual | trips | electric_trips | total_duration_sec | avg_duration_sec | source_system 
+---------------+------------+---------------+-------+----------------+--------------------+------------------+---------------
+ 2026-08-05    | JC115      | casual        |    20 |             14 |               9252 |            462.6 | citibike_jc
+ 2026-08-05    | JC115      | member        |   145 |             64 |              57115 |            393.9 | citibike_jc
+(2 rows)
+
+== Layers: rows per physical table ==
+                tbl                 | rows 
+------------------------------------+------
+ raw.trips                          | 4083
+ raw.stations                       |  108
+ stg.stg_trips                      | 4083
+ dds.fact_trip                      | 4083
+ dds.dim_station                    |  108
+ dds.dim_date                       |    7
+ mart_candidate.daily_station_trips |   84
+ mart.daily_station_trips           |   84
+(8 rows)
+
+== Raw batches ==
+ source_system |              source_file              | rows |           loaded_at           
+---------------+---------------------------------------+------+-------------------------------
+ citibike_jc   | slice/trips_2026-08-03_2026-08-09.csv | 4083 | 2026-09-18 21:09:31.785793+00
+ citibike_jc   | slice/stations_2026-08.csv            |  108 | 2026-09-18 21:09:31.785793+00
+(2 rows)
+
+== Fact rows per source system ==
+ source_system | trips | total_duration_sec 
+---------------+-------+--------------------
+ citibike_jc   |  4083 |            2113343
+(1 row)
+
+== Publication log (what the consumer sees and when it was last refreshed) ==
+ publication_id |                  run_id                  |   scenario    | date_from  |  date_to   | rows_published |             checksum             |         published_at          
+----------------+------------------------------------------+---------------+------------+------------+----------------+----------------------------------+-------------------------------
+              1 | manual__2026-09-18T20:26:34.438019+00:00 | baseline      | 2026-08-03 | 2026-08-09 |             84 | 32b30791faf47178a5a1f6c8e9299be4 | 2026-09-18 20:50:16.269742+00
+              2 | manual__2026-09-18T21:05:54.707760+00:00 | baseline      | 2026-08-03 | 2026-08-09 |             84 | 32b30791faf47178a5a1f6c8e9299be4 | 2026-09-18 21:06:22.737246+00
+              3 | manual__2026-09-18T21:06:29.172971+00:00 | baseline      | 2026-08-03 | 2026-08-09 |             84 | 32b30791faf47178a5a1f6c8e9299be4 | 2026-09-18 21:06:48.307924+00
+              4 | manual__2026-09-18T21:06:52.857031+00:00 | duplicate     | 2026-08-03 | 2026-08-09 |             84 | 32b30791faf47178a5a1f6c8e9299be4 | 2026-09-18 21:07:12.047896+00
+              5 | manual__2026-09-18T21:07:18.105434+00:00 | late_fix      | 2026-08-03 | 2026-08-09 |             84 | 97185e302636dbbf39e8d5feb83b6fcc | 2026-09-18 21:07:39.515336+00
+              6 | manual__2026-09-18T21:07:47.830736+00:00 | late_fix      | 2026-08-03 | 2026-08-09 |             84 | 97185e302636dbbf39e8d5feb83b6fcc | 2026-09-18 21:08:07.87499+00
+              7 | manual__2026-09-18T21:08:11.597363+00:00 | second_source | 2026-08-03 | 2026-08-09 |             86 | f6a6cebb960bff37760b17b141b4990d | 2026-09-18 21:08:29.071436+00
+              8 | manual__2026-09-18T21:09:29.640205+00:00 | baseline      | 2026-08-03 | 2026-08-09 |             84 | 32b30791faf47178a5a1f6c8e9299be4 | 2026-09-18 21:09:47.282242+00
+(8 rows)
+
+== Published mart: rows, run and timestamp per interval ==
+ date_from  |  date_to   | rows | trips | total_duration_sec |                  run_id                  |         published_at          
+------------+------------+------+-------+--------------------+------------------------------------------+-------------------------------
+ 2026-08-03 | 2026-08-09 |   84 |  4083 |            2113343 | manual__2026-09-18T21:09:29.640205+00:00 | 2026-09-18 21:09:47.282242+00
+(1 row)
+

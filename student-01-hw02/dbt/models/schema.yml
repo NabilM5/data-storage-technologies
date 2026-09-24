@@ -1,0 +1,85 @@
+version: 2
+
+models:
+  - name: stg_trips
+    description: One row per (source_system, ride_id), latest loaded version.
+    columns:
+      - name: trip_key
+        tests: [not_null, unique]
+      - name: started_at
+        tests: [not_null]
+      - name: ended_at
+        tests: [not_null]
+
+  - name: stg_stations
+    description: Station versions with typed validity interval.
+    columns:
+      - name: station_id
+        tests: [not_null]
+      - name: valid_from
+        tests: [not_null]
+
+  - name: dim_date
+    columns:
+      - name: date_key
+        tests: [not_null, unique]
+      - name: calendar_date
+        tests: [not_null, unique]
+
+  - name: dim_station
+    description: SCD2 station dimension; station_key identifies a version.
+    columns:
+      - name: station_key
+        tests: [not_null, unique]
+      - name: station_id
+        tests: [not_null]
+      - name: area
+        tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values: ["Jersey City", "Hoboken", "Other"]
+
+  - name: fact_trip
+    description: One row per trip per source system.
+    columns:
+      - name: trip_key
+        tests: [not_null, unique]
+      - name: date_key
+        tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('dim_date')
+                field: date_key
+      - name: station_key
+        tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('dim_station')
+                field: station_key
+      - name: rideable_type
+        tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values: [classic_bike, electric_bike]
+      - name: member_casual
+        tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values: [member, casual]
+      - name: duration_sec
+        tests: [not_null]
+
+  - name: daily_station_trips
+    description: Mart candidate, one row per day x source x station x rider type.
+    columns:
+      - name: row_key
+        tests: [not_null, unique]
+      - name: trips
+        tests: [not_null]
+      - name: total_duration_sec
+        tests: [not_null]

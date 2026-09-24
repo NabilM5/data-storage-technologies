@@ -1,0 +1,11 @@
+version: 2
+
+sources:
+  - name: raw
+    description: Rows as received from the source files, all text, append-only.
+    schema: raw
+    tables:
+      - name: trips
+        description: Citi Bike trip rows (13 source columns) plus batch metadata.
+      - name: stations
+        description: Station reference versions (valid_from / valid_to) plus batch metadata.
