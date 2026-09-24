@@ -106,9 +106,9 @@ successfully. Task states and query output are in `evidence/runs.txt`.
 
 | Case | Changed rows | Forecast | Observation | Explanation | Confirmation |
 |---|---|---|---|---|---|
-| Duplicate | `duplicate.csv`: ride `221F05B20357A5C2` (2026-08-05, JC115, casual) sent a second time, identical | No extra fact, the cell stays at 20 trips, checksum unchanged | raw 2 rows, stg 1, fact 1; cell 20 / 9,252 s unchanged; publication #4 checksum `32b30791...` equals the baseline | `stg_trips` keeps one row per `(source_system, ride_id)`, latest loaded; `trip_key` is unique in the fact | `unique_fact_trip_trip_key` PASS; raw / stg / fact query in `runs.txt` |
+| Duplicate | `duplicate.csv`: ride `221F05B20357A5C2` (2026-08-05, JC115, casual) sent a second time, identical | No extra fact, the cell stays at 20 trips, checksum unchanged | raw 2 rows, stg 1, fact 1; cell 20 / 9,252 s unchanged; publication #3 checksum `32b30791...` equals the baseline | `stg_trips` keeps one row per `(source_system, ride_id)`, latest loaded; `trip_key` is unique in the fact | `unique_fact_trip_trip_key` PASS; raw / stg / fact query in `runs.txt` |
 | History overlap | `history_overlap.csv`: a second JC115 version valid from 2026-08-05 while the first is still open | SCD2 tests fail, publication blocked | `dbt_test` failed: `scd2_dim_station_no_overlap` 1 row, `scd2_one_station_version_per_trip` 854, `unique_fact_trip_trip_key` 854, `unique_daily_station_trips_row_key` 10; `publish` upstream_failed; last publication still #7 | Two open intervals for one station make the fact join ambiguous: 1,708 fact rows for 854 trips | `dbt/tests/scd2_*.sql`; `dim_station` shows both versions; `ops.publications` unchanged |
-| Late correction | `late_fix.csv`: ride `9EF6A52D8FA471A1` (2026-08-05, JC115, member) resent with `ended_at` +15 min, `started_at` unchanged | Same trip count, member duration +900 s, a rerun gives the same result | duration 209 to 1,109 s; cell 145 trips, 57,115 to 58,015 s, avg 393.9 to 400.1; checksum `97185e30...`; the rerun gave the same cell and checksum (publications #5 and #6) | The business date comes from `started_at`, so the fix lands in the right past day; the newer version replaces the older one | raw holds both versions, stg one; "late_fix repeated" in `runs.txt` |
+| Late correction | `late_fix.csv`: ride `9EF6A52D8FA471A1` (2026-08-05, JC115, member) resent with `ended_at` +15 min, `started_at` unchanged | Same trip count, member duration +900 s, a rerun gives the same result | duration 209 to 1,109 s; cell 145 trips, 57,115 to 58,015 s, avg 393.9 to 400.1; checksum `97185e30...`; the rerun gave the same cell and checksum (publications #4 and #5) | The business date comes from `started_at`, so the fix lands in the right past day; the newer version replaces the older one | raw holds both versions, stg one; "late_fix repeated" in `runs.txt` |
 | Second source | `second_source.csv`: 3 rides from `partner_feed` reusing 3 `citibike_jc` ride ids of 2026-08-06, other station and duration | 3 new facts, nothing merged, the `citibike_jc` rows unchanged | fact 4,083 `citibike_jc` + 3 `partner_feed`; each shared id has two facts, `citibike_jc@JC115` and `partner_feed@HB609`; mart 86 rows, the original 84 plus 2 | Trip identity is `(source_system, ride_id)`, and the mart carries `source_system` | `unique_fact_trip_trip_key` PASS on 4,086 rows; shared-id query in `runs.txt` |
 
 Assumptions for the synthetic inputs: the partner system uses the same
@@ -132,9 +132,9 @@ Broken input: `zero_duration.csv` adds trip `TEST0000ZERODUR1` with
 `ended_at = started_at`. `dbt_test` failed on
 `business_rule_trip_duration_positive` with `FAIL 1`, and the returned row is
 `citibike_jc:TEST0000ZERODUR1, 2026-08-05 00:16:14.867 to 00:16:14.867,
-duration 0`. `publish` did not run and `mart` still showed publication #7.
+duration 0`. `publish` did not run and `mart` still showed publication #6.
 The next baseline run removed the scenario batch, all tests passed, and
-publication #8 was written with the baseline checksum `32b30791...`.
+publication #7 was written with the baseline checksum `32b30791...`.
 
 ## 6. Repeat comparison
 
@@ -144,14 +144,14 @@ and measures rather than `count(*)` alone.
 
 | # | Scenario | Rows | Trips | Total duration, s | Checksum |
 |---|---|---|---|---|---|
-| 1, 2, 3 | baseline | 84 | 4,083 | 2,113,343 | `32b30791faf47178a5a1f6c8e9299be4` |
-| 4 | duplicate | 84 | 4,083 | 2,113,343 | `32b30791...`, the same |
-| 5, 6 | late_fix, repeated | 84 | 4,083 | 2,114,243 | `97185e302636dbbf39e8d5feb83b6fcc`, the same for both |
-| 7 | second_source | 86 | 4,086 | | `f6a6cebb960bff37760b17b141b4990d` |
-| 8 | baseline (recovery) | 84 | 4,083 | 2,113,343 | `32b30791...`, same as 1 to 3 |
+| 1, 2 | baseline | 84 | 4,083 | 2,113,343 | `32b30791faf47178a5a1f6c8e9299be4` |
+| 3 | duplicate | 84 | 4,083 | 2,113,343 | `32b30791...`, the same |
+| 4, 5 | late_fix, repeated | 84 | 4,083 | 2,114,243 | `97185e302636dbbf39e8d5feb83b6fcc`, the same for both |
+| 6 | second_source | 86 | 4,086 | | `f6a6cebb960bff37760b17b141b4990d` |
+| 7 | baseline (recovery) | 84 | 4,083 | 2,113,343 | `32b30791...`, same as 1 to 2 |
 
 Two runs on the same correct input give identical keys, rows and measures
-(1 to 3 and 8, and 5 and 6). The loader is idempotent per batch, staging keeps
+(1 to 2 and 7, and 4 and 5). The loader is idempotent per batch, staging keeps
 one version per key, and `publish` replaces the interval instead of appending.
 
 ## 7. Limitations

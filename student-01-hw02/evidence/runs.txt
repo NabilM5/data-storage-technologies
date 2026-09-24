@@ -7,48 +7,46 @@ member           145              64               57115             393.9
 total trips: 165
 
 ################ RUN: scenario=baseline interval=2026-08-03..2026-08-09 ################
-run_id=manual__2026-09-18T21:05:54.707760+00:00  state=success
+run_id=manual__2026-09-24T13:50:38.852869+00:00  state=success
        task_id       |  state  | started  |  ended   
 ---------------------+---------+----------+----------
- check_input         | success | 21:05:55 | 21:05:58
- load_raw            | success | 21:05:59 | 21:05:59
- dbt_build_candidate | success | 21:06:00 | 21:06:13
- dbt_test            | success | 21:06:13 | 21:06:22
- publish             | success | 21:06:22 | 21:06:22
+ check_input         | success | 13:50:40 | 13:50:43
+ load_raw            | success | 13:50:43 | 13:50:44
+ dbt_build_candidate | success | 13:50:45 | 13:50:50
+ dbt_test            | success | 13:50:51 | 13:50:55
+ publish             | success | 13:50:56 | 13:50:56
 (5 rows)
 
 --- publication log (last 3) ---
  publication_id | scenario | rows_published |             checksum             | published_at 
 ----------------+----------+----------------+----------------------------------+--------------
-              2 | baseline |             84 | 32b30791faf47178a5a1f6c8e9299be4 | 21:06:22
-              1 | baseline |             84 | 32b30791faf47178a5a1f6c8e9299be4 | 20:50:16
-(2 rows)
+              1 | baseline |             84 | 32b30791faf47178a5a1f6c8e9299be4 | 13:50:56
+(1 row)
 
 
 ################ RUN: scenario=baseline interval=2026-08-03..2026-08-09 ################
-run_id=manual__2026-09-18T21:06:29.172971+00:00  state=success
+run_id=manual__2026-09-24T13:51:02.428914+00:00  state=success
        task_id       |  state  | started  |  ended   
 ---------------------+---------+----------+----------
- check_input         | success | 21:06:30 | 21:06:30
- load_raw            | success | 21:06:31 | 21:06:31
- dbt_build_candidate | success | 21:06:32 | 21:06:39
- dbt_test            | success | 21:06:39 | 21:06:47
- publish             | success | 21:06:48 | 21:06:48
+ check_input         | success | 13:51:03 | 13:51:03
+ load_raw            | success | 13:51:04 | 13:51:04
+ dbt_build_candidate | success | 13:51:05 | 13:51:10
+ dbt_test            | success | 13:51:11 | 13:51:15
+ publish             | success | 13:51:16 | 13:51:16
 (5 rows)
 
 --- publication log (last 3) ---
  publication_id | scenario | rows_published |             checksum             | published_at 
 ----------------+----------+----------------+----------------------------------+--------------
-              3 | baseline |             84 | 32b30791faf47178a5a1f6c8e9299be4 | 21:06:48
-              2 | baseline |             84 | 32b30791faf47178a5a1f6c8e9299be4 | 21:06:22
-              1 | baseline |             84 | 32b30791faf47178a5a1f6c8e9299be4 | 20:50:16
-(3 rows)
+              2 | baseline |             84 | 32b30791faf47178a5a1f6c8e9299be4 | 13:51:16
+              1 | baseline |             84 | 32b30791faf47178a5a1f6c8e9299be4 | 13:50:56
+(2 rows)
 
 --- repeat comparison: the two publications of the same input ---
  publication_id |                  run_id                  | rows_published |             checksum             
 ----------------+------------------------------------------+----------------+----------------------------------
-              3 | manual__2026-09-18T21:06:29.172971+00:00 |             84 | 32b30791faf47178a5a1f6c8e9299be4
-              2 | manual__2026-09-18T21:05:54.707760+00:00 |             84 | 32b30791faf47178a5a1f6c8e9299be4
+              2 | manual__2026-09-24T13:51:02.428914+00:00 |             84 | 32b30791faf47178a5a1f6c8e9299be4
+              1 | manual__2026-09-24T13:50:38.852869+00:00 |             84 | 32b30791faf47178a5a1f6c8e9299be4
 (2 rows)
 
  published_rows | trips | total_duration_sec |           checksum_now           
@@ -58,22 +56,22 @@ run_id=manual__2026-09-18T21:06:29.172971+00:00  state=success
 
 
 ################ RUN: scenario=duplicate interval=2026-08-03..2026-08-09 ################
-run_id=manual__2026-09-18T21:06:52.857031+00:00  state=success
+run_id=manual__2026-09-24T13:51:21.065552+00:00  state=success
        task_id       |  state  | started  |  ended   
 ---------------------+---------+----------+----------
- check_input         | success | 21:06:54 | 21:06:54
- load_raw            | success | 21:06:55 | 21:06:55
- dbt_build_candidate | success | 21:06:56 | 21:07:04
- dbt_test            | success | 21:07:05 | 21:07:11
- publish             | success | 21:07:11 | 21:07:12
+ check_input         | success | 13:51:21 | 13:51:21
+ load_raw            | success | 13:51:22 | 13:51:22
+ dbt_build_candidate | success | 13:51:23 | 13:51:27
+ dbt_test            | success | 13:51:28 | 13:51:31
+ publish             | success | 13:51:32 | 13:51:32
 (5 rows)
 
 --- publication log (last 3) ---
  publication_id | scenario  | rows_published |             checksum             | published_at 
 ----------------+-----------+----------------+----------------------------------+--------------
-              4 | duplicate |             84 | 32b30791faf47178a5a1f6c8e9299be4 | 21:07:12
-              3 | baseline  |             84 | 32b30791faf47178a5a1f6c8e9299be4 | 21:06:48
-              2 | baseline  |             84 | 32b30791faf47178a5a1f6c8e9299be4 | 21:06:22
+              3 | duplicate |             84 | 32b30791faf47178a5a1f6c8e9299be4 | 13:51:32
+              2 | baseline  |             84 | 32b30791faf47178a5a1f6c8e9299be4 | 13:51:16
+              1 | baseline  |             84 | 32b30791faf47178a5a1f6c8e9299be4 | 13:50:56
 (3 rows)
 
 --- duplicate: raw copies, staged rows and fact rows for the re-sent ride ---
@@ -92,29 +90,29 @@ run_id=manual__2026-09-18T21:06:52.857031+00:00  state=success
 
 
 ################ RUN: scenario=late_fix interval=2026-08-03..2026-08-09 ################
-run_id=manual__2026-09-18T21:07:18.105434+00:00  state=success
+run_id=manual__2026-09-24T13:51:40.317016+00:00  state=success
        task_id       |  state  | started  |  ended   
 ---------------------+---------+----------+----------
- check_input         | success | 21:07:18 | 21:07:18
- load_raw            | success | 21:07:19 | 21:07:20
- dbt_build_candidate | success | 21:07:20 | 21:07:29
- dbt_test            | success | 21:07:30 | 21:07:38
- publish             | success | 21:07:39 | 21:07:39
+ check_input         | success | 13:51:41 | 13:51:41
+ load_raw            | success | 13:51:42 | 13:51:42
+ dbt_build_candidate | success | 13:51:43 | 13:51:47
+ dbt_test            | success | 13:51:47 | 13:51:50
+ publish             | success | 13:51:51 | 13:51:51
 (5 rows)
 
 --- publication log (last 3) ---
  publication_id | scenario  | rows_published |             checksum             | published_at 
 ----------------+-----------+----------------+----------------------------------+--------------
-              5 | late_fix  |             84 | 97185e302636dbbf39e8d5feb83b6fcc | 21:07:39
-              4 | duplicate |             84 | 32b30791faf47178a5a1f6c8e9299be4 | 21:07:12
-              3 | baseline  |             84 | 32b30791faf47178a5a1f6c8e9299be4 | 21:06:48
+              4 | late_fix  |             84 | 97185e302636dbbf39e8d5feb83b6fcc | 13:51:51
+              3 | duplicate |             84 | 32b30791faf47178a5a1f6c8e9299be4 | 13:51:32
+              2 | baseline  |             84 | 32b30791faf47178a5a1f6c8e9299be4 | 13:51:16
 (3 rows)
 
 --- late_fix: both versions in raw, the accepted version in staging ---
      ride_id      |              source_file              |        ended_at         | loaded_at 
 ------------------+---------------------------------------+-------------------------+-----------
- 9EF6A52D8FA471A1 | slice/trips_2026-08-03_2026-08-09.csv | 2026-08-05 00:05:12.407 | 21:07:20
- 9EF6A52D8FA471A1 | scenarios/late_fix.csv                | 2026-08-05 00:20:12.407 | 21:07:20
+ 9EF6A52D8FA471A1 | slice/trips_2026-08-03_2026-08-09.csv | 2026-08-05 00:05:12.407 | 13:51:42
+ 9EF6A52D8FA471A1 | scenarios/late_fix.csv                | 2026-08-05 00:20:12.407 | 13:51:42
 (2 rows)
 
      ride_id      |       started_at        |        ended_at         | duration_sec |      source_file       
@@ -130,22 +128,22 @@ run_id=manual__2026-09-18T21:07:18.105434+00:00  state=success
 
 
 ################ RUN: scenario=late_fix interval=2026-08-03..2026-08-09 ################
-run_id=manual__2026-09-18T21:07:47.830736+00:00  state=success
+run_id=manual__2026-09-24T13:51:59.050715+00:00  state=success
        task_id       |  state  | started  |  ended   
 ---------------------+---------+----------+----------
- check_input         | success | 21:07:48 | 21:07:48
- load_raw            | success | 21:07:49 | 21:07:49
- dbt_build_candidate | success | 21:07:50 | 21:07:58
- dbt_test            | success | 21:07:58 | 21:08:07
- publish             | success | 21:08:07 | 21:08:07
+ check_input         | success | 13:51:59 | 13:51:59
+ load_raw            | success | 13:52:00 | 13:52:01
+ dbt_build_candidate | success | 13:52:01 | 13:52:06
+ dbt_test            | success | 13:52:07 | 13:52:12
+ publish             | success | 13:52:12 | 13:52:13
 (5 rows)
 
 --- publication log (last 3) ---
  publication_id | scenario  | rows_published |             checksum             | published_at 
 ----------------+-----------+----------------+----------------------------------+--------------
-              6 | late_fix  |             84 | 97185e302636dbbf39e8d5feb83b6fcc | 21:08:07
-              5 | late_fix  |             84 | 97185e302636dbbf39e8d5feb83b6fcc | 21:07:39
-              4 | duplicate |             84 | 32b30791faf47178a5a1f6c8e9299be4 | 21:07:12
+              5 | late_fix  |             84 | 97185e302636dbbf39e8d5feb83b6fcc | 13:52:13
+              4 | late_fix  |             84 | 97185e302636dbbf39e8d5feb83b6fcc | 13:51:51
+              3 | duplicate |             84 | 32b30791faf47178a5a1f6c8e9299be4 | 13:51:32
 (3 rows)
 
 --- late_fix repeated: same cell again (correction must not double) ---
@@ -157,22 +155,22 @@ run_id=manual__2026-09-18T21:07:47.830736+00:00  state=success
 
 
 ################ RUN: scenario=second_source interval=2026-08-03..2026-08-09 ################
-run_id=manual__2026-09-18T21:08:11.597363+00:00  state=success
+run_id=manual__2026-09-24T13:52:17.465278+00:00  state=success
        task_id       |  state  | started  |  ended   
 ---------------------+---------+----------+----------
- check_input         | success | 21:08:12 | 21:08:12
- load_raw            | success | 21:08:13 | 21:08:13
- dbt_build_candidate | success | 21:08:14 | 21:08:20
- dbt_test            | success | 21:08:20 | 21:08:28
- publish             | success | 21:08:28 | 21:08:29
+ check_input         | success | 13:52:18 | 13:52:18
+ load_raw            | success | 13:52:19 | 13:52:19
+ dbt_build_candidate | success | 13:52:20 | 13:52:27
+ dbt_test            | success | 13:52:28 | 13:52:32
+ publish             | success | 13:52:32 | 13:52:32
 (5 rows)
 
 --- publication log (last 3) ---
  publication_id |   scenario    | rows_published |             checksum             | published_at 
 ----------------+---------------+----------------+----------------------------------+--------------
-              7 | second_source |             86 | f6a6cebb960bff37760b17b141b4990d | 21:08:29
-              6 | late_fix      |             84 | 97185e302636dbbf39e8d5feb83b6fcc | 21:08:07
-              5 | late_fix      |             84 | 97185e302636dbbf39e8d5feb83b6fcc | 21:07:39
+              6 | second_source |             86 | f6a6cebb960bff37760b17b141b4990d | 13:52:32
+              5 | late_fix      |             84 | 97185e302636dbbf39e8d5feb83b6fcc | 13:52:13
+              4 | late_fix      |             84 | 97185e302636dbbf39e8d5feb83b6fcc | 13:51:51
 (3 rows)
 
 --- second_source: same ride_id values from two systems stay separate facts ---
@@ -199,31 +197,31 @@ run_id=manual__2026-09-18T21:08:11.597363+00:00  state=success
 
 
 ################ RUN: scenario=history_overlap interval=2026-08-03..2026-08-09 ################
-run_id=manual__2026-09-18T21:08:36.141865+00:00  state=failed
+run_id=manual__2026-09-24T13:52:36.676468+00:00  state=failed
        task_id       |      state      | started  |  ended   
 ---------------------+-----------------+----------+----------
- check_input         | success         | 21:08:36 | 21:08:37
- load_raw            | success         | 21:08:38 | 21:08:38
- dbt_build_candidate | success         | 21:08:39 | 21:08:49
- dbt_test            | failed          | 21:08:50 | 21:08:56
- publish             | upstream_failed | 21:08:56 | 21:08:56
+ check_input         | success         | 13:52:37 | 13:52:37
+ load_raw            | success         | 13:52:38 | 13:52:38
+ dbt_build_candidate | success         | 13:52:39 | 13:52:44
+ dbt_test            | failed          | 13:52:45 | 13:52:49
+ publish             | upstream_failed | 13:52:49 | 13:52:49
 (5 rows)
 
 --- failing dbt tests (from the dbt_test task log) ---
-{"timestamp":"2026-09-18T21:08:52.201609Z","level":"info","event":"\u001b[0m21:08:52  27 of 34 FAIL 1 scd2_dim_station_no_overlap .................................... [\u001b[31mFAIL 1\u001b[0m in 0.02s]","try_number":1,"ti_id":"01a0b659-88c9-7dd9-84b5-f9ee1e4cbb38","task_id":"dbt_test","dag_id":"hw02_citibike_elt","map_index":-1,"run_id":"manual__2026-09-18T21:08:36.141865+00:00","logger":"airflow.task.hooks.airflow.providers.standard.hooks.subprocess.SubprocessHook","filename":"subprocess.py","lineno":99}
-{"timestamp":"2026-09-18T21:08:52.227893Z","level":"info","event":"\u001b[0m21:08:52  29 of 34 FAIL 10 unique_daily_station_trips_row_key ............................ [\u001b[31mFAIL 10\u001b[0m in 0.02s]","try_number":1,"ti_id":"01a0b659-88c9-7dd9-84b5-f9ee1e4cbb38","task_id":"dbt_test","dag_id":"hw02_citibike_elt","map_index":-1,"run_id":"manual__2026-09-18T21:08:36.141865+00:00","logger":"airflow.task.hooks.airflow.providers.standard.hooks.subprocess.SubprocessHook","filename":"subprocess.py","lineno":99}
-{"timestamp":"2026-09-18T21:08:52.240035Z","level":"info","event":"\u001b[0m21:08:52  28 of 34 FAIL 854 scd2_one_station_version_per_trip ............................ [\u001b[31mFAIL 854\u001b[0m in 0.04s]","try_number":1,"ti_id":"01a0b659-88c9-7dd9-84b5-f9ee1e4cbb38","task_id":"dbt_test","dag_id":"hw02_citibike_elt","map_index":-1,"run_id":"manual__2026-09-18T21:08:36.141865+00:00","logger":"airflow.task.hooks.airflow.providers.standard.hooks.subprocess.SubprocessHook","filename":"subprocess.py","lineno":99}
-{"timestamp":"2026-09-18T21:08:52.291679Z","level":"info","event":"\u001b[0m21:08:52  33 of 34 FAIL 854 unique_fact_trip_trip_key .................................... [\u001b[31mFAIL 854\u001b[0m in 0.03s]","try_number":1,"ti_id":"01a0b659-88c9-7dd9-84b5-f9ee1e4cbb38","task_id":"dbt_test","dag_id":"hw02_citibike_elt","map_index":-1,"run_id":"manual__2026-09-18T21:08:36.141865+00:00","logger":"airflow.task.hooks.airflow.providers.standard.hooks.subprocess.SubprocessHook","filename":"subprocess.py","lineno":99}
-{"timestamp":"2026-09-18T21:08:52.397815Z","level":"info","event":"\u001b[0m21:08:52    Got 1 result, configured to fail if != 0","try_number":1,"ti_id":"01a0b659-88c9-7dd9-84b5-f9ee1e4cbb38","task_id":"dbt_test","dag_id":"hw02_citibike_elt","map_index":-1,"run_id":"manual__2026-09-18T21:08:36.141865+00:00","logger":"airflow.task.hooks.airflow.providers.standard.hooks.subprocess.SubprocessHook","filename":"subprocess.py","lineno":99}
-{"timestamp":"2026-09-18T21:08:52.401564Z","level":"info","event":"\u001b[0m21:08:52    Got 10 results, configured to fail if != 0","try_number":1,"ti_id":"01a0b659-88c9-7dd9-84b5-f9ee1e4cbb38","task_id":"dbt_test","dag_id":"hw02_citibike_elt","map_index":-1,"run_id":"manual__2026-09-18T21:08:36.141865+00:00","logger":"airflow.task.hooks.airflow.providers.standard.hooks.subprocess.SubprocessHook","filename":"subprocess.py","lineno":99}
-{"timestamp":"2026-09-18T21:08:52.404571Z","level":"info","event":"\u001b[0m21:08:52    Got 854 results, configured to fail if != 0","try_number":1,"ti_id":"01a0b659-88c9-7dd9-84b5-f9ee1e4cbb38","task_id":"dbt_test","dag_id":"hw02_citibike_elt","map_index":-1,"run_id":"manual__2026-09-18T21:08:36.141865+00:00","logger":"airflow.task.hooks.airflow.providers.standard.hooks.subprocess.SubprocessHook","filename":"subprocess.py","lineno":99}
-{"timestamp":"2026-09-18T21:08:52.406829Z","level":"info","event":"\u001b[0m21:08:52    Got 854 results, configured to fail if != 0","try_number":1,"ti_id":"01a0b659-88c9-7dd9-84b5-f9ee1e4cbb38","task_id":"dbt_test","dag_id":"hw02_citibike_elt","map_index":-1,"run_id":"manual__2026-09-18T21:08:36.141865+00:00","logger":"airflow.task.hooks.airflow.providers.standard.hooks.subprocess.SubprocessHook","filename":"subprocess.py","lineno":99}
+{"timestamp":"2026-09-24T13:52:47.552543Z","level":"info","event":"\u001b[0m13:52:47  27 of 34 FAIL 1 scd2_dim_station_no_overlap .................................... [\u001b[31mFAIL 1\u001b[0m in 0.02s]","try_number":1,"task_id":"dbt_test","run_id":"manual__2026-09-24T13:52:36.676468+00:00","dag_id":"hw02_citibike_elt","ti_id":"01a0d3b0-8764-7b28-98ef-42eabc0bfb45","map_index":-1,"logger":"airflow.task.hooks.airflow.providers.standard.hooks.subprocess.SubprocessHook","filename":"subprocess.py","lineno":99}
+{"timestamp":"2026-09-24T13:52:47.570441Z","level":"info","event":"\u001b[0m13:52:47  28 of 34 FAIL 854 scd2_one_station_version_per_trip ............................ [\u001b[31mFAIL 854\u001b[0m in 0.03s]","try_number":1,"task_id":"dbt_test","run_id":"manual__2026-09-24T13:52:36.676468+00:00","dag_id":"hw02_citibike_elt","ti_id":"01a0d3b0-8764-7b28-98ef-42eabc0bfb45","map_index":-1,"logger":"airflow.task.hooks.airflow.providers.standard.hooks.subprocess.SubprocessHook","filename":"subprocess.py","lineno":99}
+{"timestamp":"2026-09-24T13:52:47.578801Z","level":"info","event":"\u001b[0m13:52:47  29 of 34 FAIL 10 unique_daily_station_trips_row_key ............................ [\u001b[31mFAIL 10\u001b[0m in 0.02s]","try_number":1,"task_id":"dbt_test","run_id":"manual__2026-09-24T13:52:36.676468+00:00","dag_id":"hw02_citibike_elt","ti_id":"01a0d3b0-8764-7b28-98ef-42eabc0bfb45","map_index":-1,"logger":"airflow.task.hooks.airflow.providers.standard.hooks.subprocess.SubprocessHook","filename":"subprocess.py","lineno":99}
+{"timestamp":"2026-09-24T13:52:47.624581Z","level":"info","event":"\u001b[0m13:52:47  33 of 34 FAIL 854 unique_fact_trip_trip_key .................................... [\u001b[31mFAIL 854\u001b[0m in 0.02s]","try_number":1,"task_id":"dbt_test","run_id":"manual__2026-09-24T13:52:36.676468+00:00","dag_id":"hw02_citibike_elt","ti_id":"01a0d3b0-8764-7b28-98ef-42eabc0bfb45","map_index":-1,"logger":"airflow.task.hooks.airflow.providers.standard.hooks.subprocess.SubprocessHook","filename":"subprocess.py","lineno":99}
+{"timestamp":"2026-09-24T13:52:47.705884Z","level":"info","event":"\u001b[0m13:52:47    Got 1 result, configured to fail if != 0","try_number":1,"task_id":"dbt_test","run_id":"manual__2026-09-24T13:52:36.676468+00:00","dag_id":"hw02_citibike_elt","ti_id":"01a0d3b0-8764-7b28-98ef-42eabc0bfb45","map_index":-1,"logger":"airflow.task.hooks.airflow.providers.standard.hooks.subprocess.SubprocessHook","filename":"subprocess.py","lineno":99}
+{"timestamp":"2026-09-24T13:52:47.709143Z","level":"info","event":"\u001b[0m13:52:47    Got 854 results, configured to fail if != 0","try_number":1,"task_id":"dbt_test","run_id":"manual__2026-09-24T13:52:36.676468+00:00","dag_id":"hw02_citibike_elt","ti_id":"01a0d3b0-8764-7b28-98ef-42eabc0bfb45","map_index":-1,"logger":"airflow.task.hooks.airflow.providers.standard.hooks.subprocess.SubprocessHook","filename":"subprocess.py","lineno":99}
+{"timestamp":"2026-09-24T13:52:47.712031Z","level":"info","event":"\u001b[0m13:52:47    Got 10 results, configured to fail if != 0","try_number":1,"task_id":"dbt_test","run_id":"manual__2026-09-24T13:52:36.676468+00:00","dag_id":"hw02_citibike_elt","ti_id":"01a0d3b0-8764-7b28-98ef-42eabc0bfb45","map_index":-1,"logger":"airflow.task.hooks.airflow.providers.standard.hooks.subprocess.SubprocessHook","filename":"subprocess.py","lineno":99}
+{"timestamp":"2026-09-24T13:52:47.714840Z","level":"info","event":"\u001b[0m13:52:47    Got 854 results, configured to fail if != 0","try_number":1,"task_id":"dbt_test","run_id":"manual__2026-09-24T13:52:36.676468+00:00","dag_id":"hw02_citibike_elt","ti_id":"01a0d3b0-8764-7b28-98ef-42eabc0bfb45","map_index":-1,"logger":"airflow.task.hooks.airflow.providers.standard.hooks.subprocess.SubprocessHook","filename":"subprocess.py","lineno":99}
 --- publication log (last 3) ---
  publication_id |   scenario    | rows_published |             checksum             | published_at 
 ----------------+---------------+----------------+----------------------------------+--------------
-              7 | second_source |             86 | f6a6cebb960bff37760b17b141b4990d | 21:08:29
-              6 | late_fix      |             84 | 97185e302636dbbf39e8d5feb83b6fcc | 21:08:07
-              5 | late_fix      |             84 | 97185e302636dbbf39e8d5feb83b6fcc | 21:07:39
+              6 | second_source |             86 | f6a6cebb960bff37760b17b141b4990d | 13:52:32
+              5 | late_fix      |             84 | 97185e302636dbbf39e8d5feb83b6fcc | 13:52:13
+              4 | late_fix      |             84 | 97185e302636dbbf39e8d5feb83b6fcc | 13:51:51
 (3 rows)
 
 --- history_overlap: two open versions of JC115 in the dimension; publication must be unchanged ---
@@ -238,32 +236,32 @@ run_id=manual__2026-09-18T21:08:36.141865+00:00  state=failed
                           1708 |            854
 (1 row)
 
-       last_publication        | runs_in_mart 
--------------------------------+--------------
- 2026-09-18 21:08:29.071436+00 |            1
+       last_publication       | runs_in_mart
+------------------------------+--------------
+ 2026-09-24 13:52:32.86313+00 |            1
 (1 row)
 
 
 ################ RUN: scenario=zero_duration interval=2026-08-03..2026-08-09 ################
-run_id=manual__2026-09-18T21:09:05.733572+00:00  state=failed
+run_id=manual__2026-09-24T13:52:55.928787+00:00  state=failed
        task_id       |      state      | started  |  ended   
 ---------------------+-----------------+----------+----------
- check_input         | success         | 21:09:05 | 21:09:06
- load_raw            | success         | 21:09:07 | 21:09:07
- dbt_build_candidate | success         | 21:09:08 | 21:09:15
- dbt_test            | failed          | 21:09:15 | 21:09:21
- publish             | upstream_failed | 21:09:22 | 21:09:22
+ check_input         | success         | 13:52:57 | 13:52:57
+ load_raw            | success         | 13:52:58 | 13:52:58
+ dbt_build_candidate | success         | 13:52:58 | 13:53:04
+ dbt_test            | failed          | 13:53:04 | 13:53:09
+ publish             | upstream_failed | 13:53:09 | 13:53:09
 (5 rows)
 
 --- failing dbt tests (from the dbt_test task log) ---
-{"timestamp":"2026-09-18T21:09:17.683565Z","level":"info","event":"\u001b[0m21:09:17  4 of 34 FAIL 1 business_rule_trip_duration_positive ............................ [\u001b[31mFAIL 1\u001b[0m in 0.04s]","task_id":"dbt_test","try_number":1,"ti_id":"01a0b659-fc5d-7732-bea0-b5e00a3aedc5","run_id":"manual__2026-09-18T21:09:05.733572+00:00","dag_id":"hw02_citibike_elt","map_index":-1,"logger":"airflow.task.hooks.airflow.providers.standard.hooks.subprocess.SubprocessHook","filename":"subprocess.py","lineno":99}
-{"timestamp":"2026-09-18T21:09:18.156929Z","level":"info","event":"\u001b[0m21:09:18    Got 1 result, configured to fail if != 0","task_id":"dbt_test","try_number":1,"ti_id":"01a0b659-fc5d-7732-bea0-b5e00a3aedc5","run_id":"manual__2026-09-18T21:09:05.733572+00:00","dag_id":"hw02_citibike_elt","map_index":-1,"logger":"airflow.task.hooks.airflow.providers.standard.hooks.subprocess.SubprocessHook","filename":"subprocess.py","lineno":99}
+{"timestamp":"2026-09-24T13:53:07.480738Z","level":"info","event":"\u001b[0m13:53:07  4 of 34 FAIL 1 business_rule_trip_duration_positive ............................ [\u001b[31mFAIL 1\u001b[0m in 0.03s]","task_id":"dbt_test","dag_id":"hw02_citibike_elt","map_index":-1,"try_number":1,"ti_id":"01a0d3b0-d298-74fe-b4fb-9646df9d57b3","run_id":"manual__2026-09-24T13:52:55.928787+00:00","logger":"airflow.task.hooks.airflow.providers.standard.hooks.subprocess.SubprocessHook","filename":"subprocess.py","lineno":99}
+{"timestamp":"2026-09-24T13:53:08.022256Z","level":"info","event":"\u001b[0m13:53:08    Got 1 result, configured to fail if != 0","task_id":"dbt_test","dag_id":"hw02_citibike_elt","map_index":-1,"try_number":1,"ti_id":"01a0d3b0-d298-74fe-b4fb-9646df9d57b3","run_id":"manual__2026-09-24T13:52:55.928787+00:00","logger":"airflow.task.hooks.airflow.providers.standard.hooks.subprocess.SubprocessHook","filename":"subprocess.py","lineno":99}
 --- publication log (last 3) ---
  publication_id |   scenario    | rows_published |             checksum             | published_at 
 ----------------+---------------+----------------+----------------------------------+--------------
-              7 | second_source |             86 | f6a6cebb960bff37760b17b141b4990d | 21:08:29
-              6 | late_fix      |             84 | 97185e302636dbbf39e8d5feb83b6fcc | 21:08:07
-              5 | late_fix      |             84 | 97185e302636dbbf39e8d5feb83b6fcc | 21:07:39
+              6 | second_source |             86 | f6a6cebb960bff37760b17b141b4990d | 13:52:32
+              5 | late_fix      |             84 | 97185e302636dbbf39e8d5feb83b6fcc | 13:52:13
+              4 | late_fix      |             84 | 97185e302636dbbf39e8d5feb83b6fcc | 13:51:51
 (3 rows)
 
 --- zero_duration: the violating row found by the business-rule test; publication unchanged ---
@@ -272,43 +270,42 @@ run_id=manual__2026-09-18T21:09:05.733572+00:00  state=failed
  citibike_jc:TEST0000ZERODUR1 | 2026-08-05 00:16:14.867 | 2026-08-05 00:16:14.867 |            0
 (1 row)
 
-       last_publication        | runs_in_mart 
--------------------------------+--------------
- 2026-09-18 21:08:29.071436+00 |            1
+       last_publication       | runs_in_mart
+------------------------------+--------------
+ 2026-09-24 13:52:32.86313+00 |            1
 (1 row)
 
 
 ################ RUN: scenario=baseline interval=2026-08-03..2026-08-09 ################
-run_id=manual__2026-09-18T21:09:29.640205+00:00  state=success
+run_id=manual__2026-09-24T13:53:14.866435+00:00  state=success
        task_id       |  state  | started  |  ended   
 ---------------------+---------+----------+----------
- check_input         | success | 21:09:30 | 21:09:30
- load_raw            | success | 21:09:31 | 21:09:31
- dbt_build_candidate | success | 21:09:32 | 21:09:40
- dbt_test            | success | 21:09:40 | 21:09:46
- publish             | success | 21:09:47 | 21:09:47
+ check_input         | success | 13:53:15 | 13:53:15
+ load_raw            | success | 13:53:16 | 13:53:16
+ dbt_build_candidate | success | 13:53:17 | 13:53:21
+ dbt_test            | success | 13:53:22 | 13:53:27
+ publish             | success | 13:53:28 | 13:53:28
 (5 rows)
 
 --- publication log (last 3) ---
  publication_id |   scenario    | rows_published |             checksum             | published_at 
 ----------------+---------------+----------------+----------------------------------+--------------
-              8 | baseline      |             84 | 32b30791faf47178a5a1f6c8e9299be4 | 21:09:47
-              7 | second_source |             86 | f6a6cebb960bff37760b17b141b4990d | 21:08:29
-              6 | late_fix      |             84 | 97185e302636dbbf39e8d5feb83b6fcc | 21:08:07
+              7 | baseline      |             84 | 32b30791faf47178a5a1f6c8e9299be4 | 13:53:28
+              6 | second_source |             86 | f6a6cebb960bff37760b17b141b4990d | 13:52:32
+              5 | late_fix      |             84 | 97185e302636dbbf39e8d5feb83b6fcc | 13:52:13
 (3 rows)
 
 --- recovery: clean input published again; compare with the earlier baseline checksum ---
  publication_id |   scenario    | rows_published |             checksum             | published_at 
 ----------------+---------------+----------------+----------------------------------+--------------
-              1 | baseline      |             84 | 32b30791faf47178a5a1f6c8e9299be4 | 20:50:16
-              2 | baseline      |             84 | 32b30791faf47178a5a1f6c8e9299be4 | 21:06:22
-              3 | baseline      |             84 | 32b30791faf47178a5a1f6c8e9299be4 | 21:06:48
-              4 | duplicate     |             84 | 32b30791faf47178a5a1f6c8e9299be4 | 21:07:12
-              5 | late_fix      |             84 | 97185e302636dbbf39e8d5feb83b6fcc | 21:07:39
-              6 | late_fix      |             84 | 97185e302636dbbf39e8d5feb83b6fcc | 21:08:07
-              7 | second_source |             86 | f6a6cebb960bff37760b17b141b4990d | 21:08:29
-              8 | baseline      |             84 | 32b30791faf47178a5a1f6c8e9299be4 | 21:09:47
-(8 rows)
+              1 | baseline      |             84 | 32b30791faf47178a5a1f6c8e9299be4 | 13:50:56
+              2 | baseline      |             84 | 32b30791faf47178a5a1f6c8e9299be4 | 13:51:16
+              3 | duplicate     |             84 | 32b30791faf47178a5a1f6c8e9299be4 | 13:51:32
+              4 | late_fix      |             84 | 97185e302636dbbf39e8d5feb83b6fcc | 13:51:51
+              5 | late_fix      |             84 | 97185e302636dbbf39e8d5feb83b6fcc | 13:52:13
+              6 | second_source |             86 | f6a6cebb960bff37760b17b141b4990d | 13:52:32
+              7 | baseline      |             84 | 32b30791faf47178a5a1f6c8e9299be4 | 13:53:28
+(7 rows)
 
 
 === done ===
