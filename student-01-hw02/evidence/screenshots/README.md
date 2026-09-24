@@ -16,3 +16,5 @@ What each screenshot confirms. The same facts are in `../runs.txt` and
 | `09_task_instances_history.png` | Older task instances | Earlier scenario runs, same pattern |
 | `10_mart_result.png` | `select ... from mart.daily_station_trips where calendar_date = '2026-08-05' and station_id = 'JC115'`: member 145 trips / 57,115 s, casual 20 trips / 9,252 s | The published mart answers the consumer's question, matching `data/independent_check.py` exactly |
 | `11_publication_kept.png` | `select ... from ops.publications order by publication_id desc limit 5`: the latest row is `#11, baseline, checksum 32b30791...` | The failed `zero_duration` run added no row; the consumer still sees the last correct baseline |
+| `12_clean_baseline_success.png` | Fresh final baseline task-instance view: `check_input`, `load_raw`, `dbt_build_candidate`, `dbt_test`, and `publish` are all Success | The complete pipeline succeeded after the deterministic batch-load ordering fix |
+| `13_clean_publication_history.png` | Fresh `ops.publications` query with seven successful publications | The duplicate, correction, second-source, and recovery behavior matches the recorded evidence |
