@@ -10,6 +10,7 @@ import argparse
 import csv
 import os
 import uuid
+from datetime import datetime, timezone
 
 import psycopg2
 from psycopg2.extras import execute_values
@@ -60,12 +61,14 @@ def load_file(cur, kind, source_system, rel_path):
     if not rows:
         raise SystemExit(f"{rel_path}: no rows")
     batch_id = str(uuid.uuid4())
+    loaded_at = datetime.now(timezone.utc)
     cur.execute(f"DELETE FROM {table} WHERE source_system = %s AND source_file = %s", (source_system, rel_path))
     replaced = cur.rowcount
+
     execute_values(
-        cur,
-        f"INSERT INTO {table} ({', '.join(cols)}, source_system, source_file, batch_id) VALUES %s",
-        [r + [source_system, rel_path, batch_id] for r in rows],
+    cur,
+    f"INSERT INTO {table} ({', '.join(cols)}, source_system, source_file, batch_id, loaded_at) VALUES %s",
+        [r + [source_system, rel_path, batch_id, loaded_at] for r in rows],
     )
     print(f"{table}: {len(rows)} rows from {rel_path} (source_system={source_system}, "
           f"batch={batch_id[:8]}, replaced {replaced} rows of the previous batch)")
