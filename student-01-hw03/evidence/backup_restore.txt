@@ -1,0 +1,32 @@
+HW3 LOGICAL BACKUP AND RESTORE EVIDENCE
+
+Utility: pg_dump (PostgreSQL) 16.9 (Debian 16.9-1.pgdg130+1)
+Format: pg_dump custom format (-Fc)
+Dump command: pg_dump -U dwh -d dwh -Fc -f /backup/dwh.dump
+Restore command: pg_restore -U dwh -d dwh_restore --exit-on-error /backup/dwh.dump
+pg_dump exit code: 0
+pg_restore exit code: 0
+
+Source database checks:
+schemas|4
+tables|12
+indexes|16
+constraints|16
+fact|111227|111227|111227|2026-07-31 16:27:10.701|2026-08-31 23:53:36.692
+mart|6272|111227|72967687
+control|4083|2113343
+narrow_result|82ef0629c0e84a475d5d6df44311f669
+wide_result|0e089c8b4dd9546ffd849fec556d3c1f
+
+Restored database checks:
+schemas|4
+tables|12
+indexes|16
+constraints|16
+fact|111227|111227|111227|2026-07-31 16:27:10.701|2026-08-31 23:53:36.692
+mart|6272|111227|72967687
+control|4083|2113343
+narrow_result|82ef0629c0e84a475d5d6df44311f669
+wide_result|0e089c8b4dd9546ffd849fec556d3c1f
+
+Exact verification output match: True

@@ -1,0 +1,4 @@
+backup/*.dump
+__pycache__/
+*.pyc
+

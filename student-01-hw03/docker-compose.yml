@@ -1,0 +1,86 @@
+name: hw03-postgres
+
+services:
+  postgres:
+    image: postgres:16.9
+    environment:
+      POSTGRES_USER: dwh
+      POSTGRES_PASSWORD: dwh
+      POSTGRES_DB: dwh
+    command: ["postgres", "-c", "shared_preload_libraries=pg_stat_statements"]
+    ports:
+      - "127.0.0.1:5434:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./sql/00_init.sql:/docker-entrypoint-initdb.d/00_init.sql:ro
+      - ./backup:/backup
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U dwh -d dwh"]
+      interval: 3s
+      timeout: 3s
+      retries: 20
+
+  etcd:
+    image: gcr.io/etcd-development/etcd:v3.5.34
+    command:
+      - /usr/local/bin/etcd
+      - --name=etcd
+      - --data-dir=/etcd-data
+      - --listen-client-urls=http://0.0.0.0:2379
+      - --advertise-client-urls=http://etcd:2379
+      - --listen-peer-urls=http://0.0.0.0:2380
+      - --initial-advertise-peer-urls=http://etcd:2380
+      - --initial-cluster=etcd=http://etcd:2380
+      - --initial-cluster-state=new
+    volumes:
+      - etcd_data:/etcd-data
+    healthcheck:
+      test: ["CMD", "/usr/local/bin/etcdctl", "endpoint", "health"]
+      interval: 3s
+      timeout: 3s
+      retries: 20
+
+  patroni1:
+    build: ./patroni
+    command: ["patroni", "/etc/patroni/patroni.yml"]
+    depends_on:
+      etcd:
+        condition: service_healthy
+    ports:
+      - "127.0.0.1:5435:5432"
+      - "127.0.0.1:8008:8008"
+    volumes:
+      - patroni1_data:/var/lib/postgresql/data
+      - ./patroni/patroni1.yml:/etc/patroni/patroni.yml:ro
+    healthcheck:
+      test: ["CMD", "curl", "-fsS", "http://localhost:8008/health"]
+      interval: 5s
+      timeout: 3s
+      retries: 30
+
+  patroni2:
+    build: ./patroni
+    command: ["patroni", "/etc/patroni/patroni.yml"]
+    depends_on:
+      etcd:
+        condition: service_healthy
+      patroni1:
+        condition: service_started
+    ports:
+      - "127.0.0.1:5436:5432"
+      - "127.0.0.1:8009:8008"
+    volumes:
+      - patroni2_data:/var/lib/postgresql/data
+      - ./patroni/patroni2.yml:/etc/patroni/patroni.yml:ro
+    healthcheck:
+      test: ["CMD", "curl", "-fsS", "http://localhost:8008/health"]
+      interval: 5s
+      timeout: 3s
+      retries: 30
+
+volumes:
+  postgres_data:
+  etcd_data:
+  patroni1_data:
+  patroni2_data:
+

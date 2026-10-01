@@ -1,0 +1,68 @@
+HW3 TWO-SESSION EVIDENCE
+
+VISIBILITY EXPERIMENT
+Session A output:
+BEGIN
+ transaction_isolation 
+-----------------------
+ read committed
+(1 row)
+
+UPDATE 1
+                 step                 | pg_sleep 
+--------------------------------------+----------
+ session A keeps the transaction open | 
+(1 row)
+
+COMMIT
+
+Session B output:
+BEGIN
+ transaction_isolation 
+-----------------------
+ read committed
+(1 row)
+
+       step       |   note   
+------------------+----------
+ before A commits | original
+(1 row)
+
+ pg_sleep 
+----------
+ 
+(1 row)
+
+      step       |         note         
+-----------------+----------------------
+ after A commits | changed by session A
+(1 row)
+
+COMMIT
+
+LOCK EXPERIMENT
+Monitor output while B waits:
+ application_name | state  | wait_event_type |  wait_event   | blocking_pids 
+------------------+--------+-----------------+---------------+---------------
+ hw3_lock_holder  | active | Timeout         | PgSleep       | {}
+ hw3_lock_waiter  | active | Lock            | transactionid | {1027}
+(2 rows)
+
+
+Session B same-row UPDATE output:
+BEGIN
+SET
+ERROR:  canceling statement due to statement timeout
+CONTEXT:  while updating tuple (0,4) in relation "mvcc_demo"
+
+Session A lock-holder output:
+BEGIN
+UPDATE 1
+ pg_sleep 
+----------
+ 
+(1 row)
+
+COMMIT
+
+Waiting UPDATE exit code (timeout is expected): 3

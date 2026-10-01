@@ -1,0 +1,7 @@
+query,variant,matching_rows,times_ms,median_ms,difference_rows
+narrow,original,165,9.295;9.510;9.674;9.642;10.191,9.642,0
+wide,original,111227,22.969;20.182;20.144;21.028;20.281,20.281,0
+narrow,index,165,0.414;0.398;0.436;0.514;0.386,0.414,0
+wide,index,111227,20.894;20.600;20.166;26.367;22.086,20.894,0
+narrow,partitioned_index,165,0.421;0.368;0.461;0.389;0.499,0.421,0
+wide,partitioned_index,111227,18.504;21.843;18.172;17.899;18.572,18.504,0

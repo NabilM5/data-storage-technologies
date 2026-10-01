@@ -1,0 +1,233 @@
+HW3 OPTIMIZATION EVIDENCE
+
+Measured value: server Execution Time from EXPLAIN ANALYZE.
+Each row: one discarded warm-up, then five measured runs.
+
+Execution settings:
+ shared_buffers 
+----------------
+ 128MB
+(1 row)
+
+ work_mem 
+----------
+ 4MB
+(1 row)
+
+ max_parallel_workers_per_gather 
+---------------------------------
+ 2
+(1 row)
+
+ jit 
+-----
+ on
+(1 row)
+
+ random_page_cost 
+------------------
+ 4
+(1 row)
+
+
+Total fact rows: 111227
+Narrow matching rows: 165 (0.1483%)
+Wide matching rows: 111227 (100.0000%)
+Index build client time: 281.525 ms
+Index size: 3456 kB
+
+narrow / original
+times ms: 9.295;9.510;9.674;9.642;10.191
+median ms: 9.642
+two-way EXCEPT ALL difference rows: 0
+                                                                                               QUERY PLAN                                                                                                
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+ GroupAggregate  (cost=4232.38..4234.82 rows=2 width=63) (actual time=9.240..9.262 rows=2 loops=1)
+   Group Key: member_casual
+   Buffers: shared hit=2284
+   ->  Sort  (cost=4232.38..4232.72 rows=138 width=24) (actual time=9.228..9.236 rows=165 loops=1)
+         Sort Key: member_casual
+         Sort Method: quicksort  Memory: 33kB
+         Buffers: shared hit=2284
+         ->  Seq Scan on fact_trip  (cost=0.00..4227.47 rows=138 width=24) (actual time=0.267..9.186 rows=165 loops=1)
+               Filter: ((started_at >= '2026-08-05 00:00:00'::timestamp without time zone) AND (started_at < '2026-08-06 00:00:00'::timestamp without time zone) AND (start_station_id = 'JC115'::text))
+               Rows Removed by Filter: 111062
+               Buffers: shared hit=2281
+ Planning:
+   Buffers: shared hit=105
+ Planning Time: 0.187 ms
+ Execution Time: 9.295 ms
+(15 rows)
+
+
+wide / original
+times ms: 22.969;20.182;20.144;21.028;20.281
+median ms: 20.281
+two-way EXCEPT ALL difference rows: 0
+                                                                                              QUERY PLAN                                                                                               
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+ Finalize GroupAggregate  (cost=5745.88..5778.28 rows=216 width=95) (actual time=21.366..22.864 rows=5 loops=1)
+   Group Key: (CASE WHEN (start_station_id ~~ 'JC%'::text) THEN 'Jersey City'::text WHEN (start_station_id ~~ 'HB%'::text) THEN 'Hoboken'::text ELSE 'Other'::text END), member_casual
+   Buffers: shared hit=2289
+   ->  Gather Merge  (cost=5745.88..5770.72 rows=216 width=95) (actual time=21.358..22.854 rows=10 loops=1)
+         Workers Planned: 1
+         Workers Launched: 1
+         Buffers: shared hit=2289
+         ->  Sort  (cost=4745.87..4746.41 rows=216 width=95) (actual time=20.034..20.037 rows=5 loops=2)
+               Sort Key: (CASE WHEN (start_station_id ~~ 'JC%'::text) THEN 'Jersey City'::text WHEN (start_station_id ~~ 'HB%'::text) THEN 'Hoboken'::text ELSE 'Other'::text END), member_casual
+               Sort Method: quicksort  Memory: 25kB
+               Buffers: shared hit=2289
+               Worker 0:  Sort Method: quicksort  Memory: 25kB
+               ->  Partial HashAggregate  (cost=4734.25..4737.49 rows=216 width=95) (actual time=19.996..19.999 rows=5 loops=2)
+                     Group Key: CASE WHEN (start_station_id ~~ 'JC%'::text) THEN 'Jersey City'::text WHEN (start_station_id ~~ 'HB%'::text) THEN 'Hoboken'::text ELSE 'Other'::text END, member_casual
+                     Batches: 1  Memory Usage: 40kB
+                     Buffers: shared hit=2281
+                     Worker 0:  Batches: 1  Memory Usage: 40kB
+                     ->  Parallel Seq Scan on fact_trip  (cost=0.00..3589.49 rows=65415 width=56) (actual time=0.008..10.556 rows=55614 loops=2)
+                           Filter: ((started_at >= '2026-07-31 00:00:00'::timestamp without time zone) AND (started_at < '2026-09-01 00:00:00'::timestamp without time zone))
+                           Buffers: shared hit=2281
+ Planning:
+   Buffers: shared hit=105
+ Planning Time: 0.299 ms
+ Execution Time: 22.969 ms
+(24 rows)
+
+
+narrow / index
+times ms: 0.414;0.398;0.436;0.514;0.386
+median ms: 0.414
+two-way EXCEPT ALL difference rows: 0
+                                                                                                    QUERY PLAN                                                                                                     
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+ Sort  (cost=504.73..504.74 rows=2 width=63) (actual time=0.366..0.367 rows=2 loops=1)
+   Sort Key: member_casual
+   Sort Method: quicksort  Memory: 25kB
+   Buffers: shared hit=136
+   ->  HashAggregate  (cost=504.69..504.72 rows=2 width=63) (actual time=0.354..0.355 rows=2 loops=1)
+         Group Key: member_casual
+         Batches: 1  Memory Usage: 24kB
+         Buffers: shared hit=133
+         ->  Bitmap Heap Scan on fact_trip  (cost=6.43..502.32 rows=158 width=24) (actual time=0.037..0.311 rows=165 loops=1)
+               Recheck Cond: ((start_station_id = 'JC115'::text) AND (started_at >= '2026-08-05 00:00:00'::timestamp without time zone) AND (started_at < '2026-08-06 00:00:00'::timestamp without time zone))
+               Heap Blocks: exact=129
+               Buffers: shared hit=133
+               ->  Bitmap Index Scan on idx_fact_trip_station_started  (cost=0.00..6.39 rows=158 width=0) (actual time=0.022..0.022 rows=165 loops=1)
+                     Index Cond: ((start_station_id = 'JC115'::text) AND (started_at >= '2026-08-05 00:00:00'::timestamp without time zone) AND (started_at < '2026-08-06 00:00:00'::timestamp without time zone))
+                     Buffers: shared hit=4
+ Planning:
+   Buffers: shared hit=136
+ Planning Time: 0.274 ms
+ Execution Time: 0.414 ms
+(19 rows)
+
+
+wide / index
+times ms: 20.894;20.600;20.166;26.367;22.086
+median ms: 20.894
+two-way EXCEPT ALL difference rows: 0
+                                                                                              QUERY PLAN                                                                                               
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+ Finalize GroupAggregate  (cost=5745.88..5778.28 rows=216 width=95) (actual time=19.495..20.811 rows=5 loops=1)
+   Group Key: (CASE WHEN (start_station_id ~~ 'JC%'::text) THEN 'Jersey City'::text WHEN (start_station_id ~~ 'HB%'::text) THEN 'Hoboken'::text ELSE 'Other'::text END), member_casual
+   Buffers: shared hit=2289
+   ->  Gather Merge  (cost=5745.88..5770.72 rows=216 width=95) (actual time=19.488..20.801 rows=10 loops=1)
+         Workers Planned: 1
+         Workers Launched: 1
+         Buffers: shared hit=2289
+         ->  Sort  (cost=4745.87..4746.41 rows=216 width=95) (actual time=18.361..18.362 rows=5 loops=2)
+               Sort Key: (CASE WHEN (start_station_id ~~ 'JC%'::text) THEN 'Jersey City'::text WHEN (start_station_id ~~ 'HB%'::text) THEN 'Hoboken'::text ELSE 'Other'::text END), member_casual
+               Sort Method: quicksort  Memory: 25kB
+               Buffers: shared hit=2289
+               Worker 0:  Sort Method: quicksort  Memory: 25kB
+               ->  Partial HashAggregate  (cost=4734.25..4737.49 rows=216 width=95) (actual time=18.339..18.341 rows=5 loops=2)
+                     Group Key: CASE WHEN (start_station_id ~~ 'JC%'::text) THEN 'Jersey City'::text WHEN (start_station_id ~~ 'HB%'::text) THEN 'Hoboken'::text ELSE 'Other'::text END, member_casual
+                     Batches: 1  Memory Usage: 40kB
+                     Buffers: shared hit=2281
+                     Worker 0:  Batches: 1  Memory Usage: 40kB
+                     ->  Parallel Seq Scan on fact_trip  (cost=0.00..3589.49 rows=65415 width=56) (actual time=0.008..9.701 rows=55614 loops=2)
+                           Filter: ((started_at >= '2026-07-31 00:00:00'::timestamp without time zone) AND (started_at < '2026-09-01 00:00:00'::timestamp without time zone))
+                           Buffers: shared hit=2281
+ Planning:
+   Buffers: shared hit=126
+ Planning Time: 0.306 ms
+ Execution Time: 20.894 ms
+(24 rows)
+
+
+narrow / partitioned_index
+times ms: 0.421;0.368;0.461;0.389;0.499
+median ms: 0.421
+two-way EXCEPT ALL difference rows: 0
+                                                                                                    QUERY PLAN                                                                                                     
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+ Sort  (cost=332.16..332.17 rows=2 width=63) (actual time=0.385..0.386 rows=2 loops=1)
+   Sort Key: fact_trip_partitioned.member_casual
+   Sort Method: quicksort  Memory: 25kB
+   Buffers: shared hit=110
+   ->  HashAggregate  (cost=332.12..332.15 rows=2 width=63) (actual time=0.364..0.365 rows=2 loops=1)
+         Group Key: fact_trip_partitioned.member_casual
+         Batches: 1  Memory Usage: 24kB
+         Buffers: shared hit=107
+         ->  Bitmap Heap Scan on fact_trip_p_aug01_08 fact_trip_partitioned  (cost=6.21..329.86 rows=151 width=24) (actual time=0.034..0.323 rows=165 loops=1)
+               Recheck Cond: ((start_station_id = 'JC115'::text) AND (started_at >= '2026-08-05 00:00:00'::timestamp without time zone) AND (started_at < '2026-08-06 00:00:00'::timestamp without time zone))
+               Heap Blocks: exact=104
+               Buffers: shared hit=107
+               ->  Bitmap Index Scan on fact_trip_p_aug01_08_start_station_id_started_at_idx  (cost=0.00..6.17 rows=151 width=0) (actual time=0.019..0.019 rows=165 loops=1)
+                     Index Cond: ((start_station_id = 'JC115'::text) AND (started_at >= '2026-08-05 00:00:00'::timestamp without time zone) AND (started_at < '2026-08-06 00:00:00'::timestamp without time zone))
+                     Buffers: shared hit=3
+ Planning:
+   Buffers: shared hit=282
+ Planning Time: 0.561 ms
+ Execution Time: 0.421 ms
+(19 rows)
+
+
+wide / partitioned_index
+times ms: 18.504;21.843;18.172;17.899;18.572
+median ms: 18.504
+two-way EXCEPT ALL difference rows: 0
+                                                                                                                                QUERY PLAN                                                                                                                                 
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+ Finalize GroupAggregate  (cost=5645.57..5706.20 rows=214 width=95) (actual time=17.086..18.435 rows=5 loops=1)
+   Group Key: (CASE WHEN (fact_trip_partitioned.start_station_id ~~ 'JC%'::text) THEN 'Jersey City'::text WHEN (fact_trip_partitioned.start_station_id ~~ 'HB%'::text) THEN 'Hoboken'::text ELSE 'Other'::text END), fact_trip_partitioned.member_casual
+   Buffers: shared hit=2299
+   ->  Gather Merge  (cost=5645.57..5695.50 rows=428 width=95) (actual time=17.078..18.425 rows=14 loops=1)
+         Workers Planned: 2
+         Workers Launched: 2
+         Buffers: shared hit=2299
+         ->  Sort  (cost=4645.54..4646.08 rows=214 width=95) (actual time=15.498..15.500 rows=5 loops=3)
+               Sort Key: (CASE WHEN (fact_trip_partitioned.start_station_id ~~ 'JC%'::text) THEN 'Jersey City'::text WHEN (fact_trip_partitioned.start_station_id ~~ 'HB%'::text) THEN 'Hoboken'::text ELSE 'Other'::text END), fact_trip_partitioned.member_casual
+               Sort Method: quicksort  Memory: 25kB
+               Buffers: shared hit=2299
+               Worker 0:  Sort Method: quicksort  Memory: 25kB
+               Worker 1:  Sort Method: quicksort  Memory: 25kB
+               ->  Partial HashAggregate  (cost=4634.05..4637.26 rows=214 width=95) (actual time=15.478..15.481 rows=5 loops=3)
+                     Group Key: (CASE WHEN (fact_trip_partitioned.start_station_id ~~ 'JC%'::text) THEN 'Jersey City'::text WHEN (fact_trip_partitioned.start_station_id ~~ 'HB%'::text) THEN 'Hoboken'::text ELSE 'Other'::text END), fact_trip_partitioned.member_casual
+                     Batches: 1  Memory Usage: 40kB
+                     Buffers: shared hit=2283
+                     Worker 0:  Batches: 1  Memory Usage: 40kB
+                     Worker 1:  Batches: 1  Memory Usage: 40kB
+                     ->  Parallel Append  (cost=0.00..3823.17 rows=46336 width=56) (actual time=0.006..9.406 rows=37076 loops=3)
+                           Buffers: shared hit=2283
+                           ->  Parallel Seq Scan on fact_trip_p_aug22_sep01 fact_trip_partitioned_5  (cost=0.00..1143.84 rows=20839 width=56) (actual time=0.006..6.538 rows=35433 loops=1)
+                                 Filter: ((started_at >= '2026-07-31 00:00:00'::timestamp without time zone) AND (started_at < '2026-09-01 00:00:00'::timestamp without time zone))
+                                 Buffers: shared hit=727
+                           ->  Parallel Seq Scan on fact_trip_p_aug08_15 fact_trip_partitioned_3  (cost=0.00..873.10 rows=15903 width=56) (actual time=0.007..5.041 rows=27040 loops=1)
+                                 Filter: ((started_at >= '2026-07-31 00:00:00'::timestamp without time zone) AND (started_at < '2026-09-01 00:00:00'::timestamp without time zone))
+                                 Buffers: shared hit=555
+                           ->  Parallel Seq Scan on fact_trip_p_aug15_22 fact_trip_partitioned_4  (cost=0.00..800.87 rows=14591 width=56) (actual time=0.004..1.453 rows=8270 loops=3)
+                                 Filter: ((started_at >= '2026-07-31 00:00:00'::timestamp without time zone) AND (started_at < '2026-09-01 00:00:00'::timestamp without time zone))
+                                 Buffers: shared hit=509
+                           ->  Parallel Seq Scan on fact_trip_p_aug01_08 fact_trip_partitioned_2  (cost=0.00..772.44 rows=14070 width=56) (actual time=0.002..4.742 rows=23924 loops=1)
+                                 Filter: ((started_at >= '2026-07-31 00:00:00'::timestamp without time zone) AND (started_at < '2026-09-01 00:00:00'::timestamp without time zone))
+                                 Buffers: shared hit=491
+                           ->  Parallel Seq Scan on fact_trip_p_before_aug fact_trip_partitioned_1  (cost=0.00..1.24 rows=12 width=56) (actual time=0.004..0.008 rows=20 loops=1)
+                                 Filter: ((started_at >= '2026-07-31 00:00:00'::timestamp without time zone) AND (started_at < '2026-09-01 00:00:00'::timestamp without time zone))
+                                 Buffers: shared hit=1
+ Planning:
+   Buffers: shared hit=534
+ Planning Time: 1.116 ms
+ Execution Time: 18.504 ms
+(40 rows)
+
+

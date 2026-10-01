@@ -1,0 +1,69 @@
+HW3 PATRONI EVIDENCE
+
+Roles before (REST API): {'patroni1': 'primary', 'patroni2': 'replica'}
+patronictl list before:
++ Cluster: hw03 (7691651632415363104) ------+----+-------------+-----+------------+-----+
+| Member   | Host     | Role    | State     | TL | Receive LSN | Lag | Replay LSN | Lag |
++----------+----------+---------+-----------+----+-------------+-----+------------+-----+
+| patroni1 | patroni1 | Leader  | running   |  1 |             |     |            |     |
+| patroni2 | patroni2 | Replica | streaming |  1 |   0/304D558 |   0 |  0/304D558 |   0 |
++----------+----------+---------+-----------+----+-------------+-----+------------+-----+
+
+SQL roles and marker count before:
+patroni1: f|1
+patroni2: t|1
+
+First marker replicated: before_switchover_20261001105932
+
+Switchover command output:
+Current cluster topology
++ Cluster: hw03 (7691651632415363104) ------+----+-------------+-----+------------+-----+
+| Member   | Host     | Role    | State     | TL | Receive LSN | Lag | Replay LSN | Lag |
++----------+----------+---------+-----------+----+-------------+-----+------------+-----+
+| patroni1 | patroni1 | Leader  | running   |  1 |             |     |            |     |
+| patroni2 | patroni2 | Replica | streaming |  1 |   0/36AD618 |   0 |  0/36AD618 |   0 |
++----------+----------+---------+-----------+----+-------------+-----+------------+-----+
+2026-10-01 10:59:36.59265 Successfully switched over to "patroni2"
++ Cluster: hw03 (7691651632415363104) ----+----+-------------+-----+------------+-----+
+| Member   | Host     | Role    | State   | TL | Receive LSN | Lag | Replay LSN | Lag |
++----------+----------+---------+---------+----+-------------+-----+------------+-----+
+| patroni1 | patroni1 | Replica | stopped |    |     unknown |     |    unknown |     |
+| patroni2 | patroni2 | Leader  | running |  1 |             |     |            |     |
++----------+----------+---------+---------+----+-------------+-----+------------+-----+
+
+Roles after (REST API): {'patroni1': 'replica', 'patroni2': 'primary'}
+patronictl list after:
++ Cluster: hw03 (7691651632415363104) ------+----+-------------+-----+------------+-----+
+| Member   | Host     | Role    | State     | TL | Receive LSN | Lag | Replay LSN | Lag |
++----------+----------+---------+-----------+----+-------------+-----+------------+-----+
+| patroni1 | patroni1 | Replica | streaming |  2 |   0/3000000 |   7 |  0/36AD740 |   0 |
+| patroni2 | patroni2 | Leader  | running   |  2 |             |     |            |     |
++----------+----------+---------+-----------+----+-------------+-----+------------+-----+
+
+Old and new markers visible on new leader patroni2:
+              marker              
+----------------------------------
+ after_switchover_20261001105932
+ before_switchover_20261001105932
+(2 rows)
+
+
+New marker replicated to current replica patroni1: after_switchover_20261001105932
+
+Write attempted on current replica patroni1; exit code: 3
+Replica write error:
+ERROR:  cannot execute INSERT in a read-only transaction
+
+Rejected marker count on leader (must be 0): 0
+
+Control slice after switchover:
+ fact_rows 
+-----------
+      4083
+(1 row)
+
+ mart_rows | trips | total_duration_sec 
+-----------+-------+--------------------
+        84 |  4083 |            2113343
+(1 row)
+
