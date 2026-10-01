@@ -17,7 +17,7 @@ CREATE TABLE hw3.fact_trip_partitioned (
 
 CREATE TABLE hw3.fact_trip_p_before_aug
     PARTITION OF hw3.fact_trip_partitioned
-    FOR VALUES FROM (MINVALUE) TO ('2026-08-01');
+    FOR VALUES FROM ('2026-07-01') TO ('2026-08-01');
 
 CREATE TABLE hw3.fact_trip_p_aug01_08
     PARTITION OF hw3.fact_trip_partitioned
@@ -42,4 +42,3 @@ CREATE INDEX idx_partitioned_station_started
     ON hw3.fact_trip_partitioned (start_station_id, started_at);
 
 ANALYZE hw3.fact_trip_partitioned;
-

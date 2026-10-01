@@ -30,6 +30,9 @@ answers are:
 | Wide | Jersey City / member | 46,741 | 25,979 | 26,493,189 | 566.8 |
 | Wide | Other / casual | 2 | 2 | 4,218 | 2,109.0 |
 
+The two `Other / casual` trips have missing start-station IDs, so they do not
+match the `JC%` or `HB%` area rules.
+
 ## 2. Measurements
 
 | Query / variant | Matching rows | Main plan nodes / partitions | Five times, ms | Median, ms | Answer matched? |
@@ -42,7 +45,9 @@ answers are:
 | Wide / partitioned + index | 111,227 | Parallel Append; all five partitions | 18.504, 21.843, 18.172, 17.899, 18.572 | 18.504 | Yes |
 
 The complete plans are in `evidence/optimization.txt`; all numeric rows are in
-`evidence/optimization_results.csv`.
+`evidence/optimization_results.csv`. Screenshot 02 is an illustrative first
+plan capture with pages still being read into shared buffers, not one of the
+five warm measured runs used for the 9.642 ms median.
 
 ## 3. Index conclusion
 
@@ -68,10 +73,10 @@ data. Every lower bound is included and upper bound excluded:
 
 | Partition | Bound | Rows |
 |---|---|---:|
-| `p_before_aug` | MINVALUE to 2026-08-01 | 20 |
+| `p_before_aug` | 2026-07-01 to 2026-08-01 | 20 |
 | `p_aug01_08` | 2026-08-01 to 2026-08-08 | 23,924 |
-| `p_aug08_15` | 2026-08-08 to 2026-08-15 | 24,810 |
-| `p_aug15_22` | 2026-08-15 to 2026-08-22 | 27,040 |
+| `p_aug08_15` | 2026-08-08 to 2026-08-15 | 27,040 |
+| `p_aug15_22` | 2026-08-15 to 2026-08-22 | 24,810 |
 | `p_aug22_sep01` | 2026-08-22 to 2026-09-01 | 35,433 |
 
 The narrow plan names only `fact_trip_p_aug01_08`, proving partition pruning.
@@ -117,7 +122,11 @@ exactly. Full commands and output are in `evidence/backup_restore.txt`.
 
 The local cluster has two PostgreSQL 16.9 nodes managed by Patroni 4.1.5 and
 one etcd 3.5.34 DCS. etcd stores cluster state and the leader lock, not trip
-rows. Before the test, both Patroni and SQL confirmed `patroni1` as writable
+rows. The cluster uses a separate `dwh` database with the same raw, fact and
+mart schemas. `patroni_demo.py` loaded the existing 4,083-row HW2 control-slice
+CSV only on the current leader; the replica received those changes through
+physical WAL replication rather than a separate load. Before the test, both
+Patroni and SQL confirmed `patroni1` as writable
 leader (`pg_is_in_recovery() = false`) and `patroni2` as streaming replica
 (`true`, lag 0). In the final manual run, the replica received marker
 `manual_before_switchover_20261001160019` on timeline 8.
@@ -129,6 +138,10 @@ current replica with lag 0. A direct insert on that replica failed with
 `cannot execute INSERT in a read-only transaction`; the marker count on the
 leader stayed zero. After the role change, the replicated mart still had 4,083
 fact rows, 84 mart rows and 2,113,343 seconds.
+
+The automated text evidence in `evidence/patroni.txt` records the first run on
+timelines 1 to 2. The final manual screenshots record a later run on timelines
+8 to 9; both runs demonstrate the same role change and replication checks.
 
 Switchover is planned and chooses a healthy caught-up candidate. Failover is an
 emergency promotion when the leader is unavailable; asynchronous lag can make
@@ -143,7 +156,9 @@ Both sessions used `Read Committed`. Session A updated one row and kept the
 transaction open. Session B first read `original`, because uncommitted row
 versions are invisible. After A committed, B's next statement read
 `changed by session A`, because Read Committed takes a new snapshot for each
-statement. Both transactions ended.
+statement. Internally, an UPDATE creates a new row version. Session B's
+snapshot did not include A's transaction until A committed, so it continued to
+read the earlier committed version. Both transactions ended.
 
 In the lock experiment, B tried to update the same row. `pg_stat_activity`
 showed B waiting on `Lock / transactionid`, and `pg_blocking_pids()` returned
