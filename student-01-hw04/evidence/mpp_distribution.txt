@@ -1,0 +1,17 @@
+HW4 SIMULATED FOUR-SEGMENT MPP DISTRIBUTION
+
+Hash by trip_key (segment, rows):
+0	27677
+1	27909
+2	27758
+3	27883
+
+Hash by start_station_id (segment, rows):
+0	19499
+1	31169
+2	27825
+3	32734
+
+Hash by area (only non-empty segments are returned):
+1	111225
+3	2

@@ -1,0 +1,31 @@
+HW4 CORRECTNESS EVIDENCE
+
+PostgreSQL canonical SHA-256: 10280428fc41ea33fdf919f18d7fe2d849998aa42108cf050f72c45818b2ac4f
+ClickHouse station-order SHA-256: 10280428fc41ea33fdf919f18d7fe2d849998aa42108cf050f72c45818b2ac4f
+ClickHouse key-order SHA-256: 10280428fc41ea33fdf919f18d7fe2d849998aa42108cf050f72c45818b2ac4f
+
+PostgreSQL summary:
+111227	111227	72967687	541610.10	2026-07-31 16:27:10.701	2026-08-31 23:53:36.692
+
+Checks:
+all rows PG vs CH station order: equal
+all rows PG vs CH key order: equal
+per-day totals PG vs trips_by_station: equal
+per-day totals PG vs trips_by_key: equal
+q1_narrow PG vs CH station order: equal
+q1_narrow PG vs CH key order: equal
+q1_narrow PG vs CH mart: equal
+q2_wide PG vs CH station order: equal
+q2_wide PG vs CH key order: equal
+q2_wide PG vs CH mart: equal
+
+q1_narrow result:
+casual	20	14	9252	99.00	462.6
+member	145	64	57115	539.50	393.9
+
+q2_wide result:
+Hoboken	casual	15311	9745	14159551	99287.10	924.8
+Hoboken	member	33287	19831	15819077	132679.50	475.2
+Jersey City	casual	15886	10905	16491652	109019.40	1038.1
+Jersey City	member	46741	25979	26493189	200603.30	566.8
+Other	casual	2	2	4218	20.80	2109.0

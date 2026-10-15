@@ -1,0 +1,53 @@
+name: hw04-clickhouse
+
+services:
+  postgres:
+    image: postgres:16.9
+    environment:
+      POSTGRES_USER: dwh
+      POSTGRES_PASSWORD: dwh
+      POSTGRES_DB: dwh
+    command:
+      - postgres
+      - -c
+      - shared_buffers=256MB
+      - -c
+      - max_parallel_workers_per_gather=2
+    ports:
+      - "127.0.0.1:5437:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U dwh -d dwh"]
+      interval: 3s
+      timeout: 3s
+      retries: 30
+    mem_limit: 2g
+    cpus: 2.0
+
+  clickhouse:
+    image: clickhouse/clickhouse-server:25.8.33.6
+    environment:
+      CLICKHOUSE_DB: dwh
+      CLICKHOUSE_USER: dwh
+      CLICKHOUSE_PASSWORD: dwh
+      CLICKHOUSE_DEFAULT_ACCESS_MANAGEMENT: "1"
+    ports:
+      - "127.0.0.1:8124:8123"
+      - "127.0.0.1:9001:9000"
+    volumes:
+      - clickhouse_data:/var/lib/clickhouse
+      - clickhouse_logs:/var/log/clickhouse-server
+    healthcheck:
+      test: ["CMD-SHELL", "clickhouse-client --user dwh --password dwh --query 'SELECT 1'"]
+      interval: 3s
+      timeout: 3s
+      retries: 30
+    mem_limit: 2g
+    cpus: 2.0
+
+volumes:
+  postgres_data:
+  clickhouse_data:
+  clickhouse_logs:
+

@@ -1,0 +1,28 @@
+PREVIOUS HW4 LOAD AND MART EVIDENCE
+
+Run `bash scripts/run_all.sh --clean` to replace this file with evidence from
+the automatic source download and full-grain mart checks.
+
+PostgreSQL: PostgreSQL 16.9 (Debian 16.9-1.pgdg130+1) on aarch64-unknown-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit
+ClickHouse: 25.8.33.6
+Source: student-01-hw02/data/JC-202608-citibike-tripdata.csv.zip
+Fare rule: $2.50 + $0.20 per completed minute + $1.00 for casual riders
+
+Total source rows: 111227
+History rows before 2026-08-25: 86325
+Batch 1 rows, 2026-08-25 to 2026-08-29: 14356
+Batch 2 rows, 2026-08-29 onward: 10546
+
+Mart rows immediately after MV creation: 0
+History totals after controlled backfill: 86325	57043212	421929.10
+Totals after batch 1: 100681	65332722	487533.50
+Totals after batch 2: 111227	72967687	541610.10
+
+Final ClickHouse source tables:
+trips_by_key	111227	111227	72967687	541610.10
+trips_by_station	111227	111227	72967687	541610.10
+
+Active parts:
+daily_station_mart	4	6272	90663
+trips_by_key	2	111227	6067801
+trips_by_station	7	111227	6222054
