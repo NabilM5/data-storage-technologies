@@ -5,25 +5,25 @@ postgres / btree_index / q1_narrow
 ========================================================================
                                                                                                     QUERY PLAN                                                                                                     
 -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
- Sort  (cost=495.46..495.46 rows=2 width=95) (actual time=0.476..0.476 rows=2 loops=1)
+ Sort  (cost=492.47..492.48 rows=2 width=95) (actual time=0.440..0.440 rows=2 loops=1)
    Sort Key: member_casual
    Sort Method: quicksort  Memory: 25kB
    Buffers: shared hit=136
-   ->  HashAggregate  (cost=495.41..495.45 rows=2 width=95) (actual time=0.455..0.457 rows=2 loops=1)
+   ->  HashAggregate  (cost=492.42..492.46 rows=2 width=95) (actual time=0.416..0.417 rows=2 loops=1)
          Group Key: member_casual
          Batches: 1  Memory Usage: 24kB
          Buffers: shared hit=133
-         ->  Bitmap Heap Scan on trips  (cost=6.34..492.76 rows=151 width=31) (actual time=0.069..0.384 rows=165 loops=1)
+         ->  Bitmap Heap Scan on trips  (cost=6.33..489.80 rows=150 width=31) (actual time=0.067..0.352 rows=165 loops=1)
                Recheck Cond: ((start_station_id = 'JC115'::text) AND (started_at >= '2026-08-05 00:00:00'::timestamp without time zone) AND (started_at < '2026-08-06 00:00:00'::timestamp without time zone))
                Heap Blocks: exact=129
                Buffers: shared hit=133
-               ->  Bitmap Index Scan on idx_trips_station_started  (cost=0.00..6.31 rows=151 width=0) (actual time=0.055..0.055 rows=165 loops=1)
+               ->  Bitmap Index Scan on idx_trips_station_started  (cost=0.00..6.29 rows=150 width=0) (actual time=0.053..0.053 rows=165 loops=1)
                      Index Cond: ((start_station_id = 'JC115'::text) AND (started_at >= '2026-08-05 00:00:00'::timestamp without time zone) AND (started_at < '2026-08-06 00:00:00'::timestamp without time zone))
                      Buffers: shared hit=4
  Planning:
    Buffers: shared hit=160
- Planning Time: 0.411 ms
- Execution Time: 0.546 ms
+ Planning Time: 0.287 ms
+ Execution Time: 0.494 ms
 (19 rows)
 
 
@@ -42,8 +42,8 @@ Expression ((Project names + (Before ORDER BY + Projection) [lifted up part]))
                 Keys:
                   started_at
                 Condition: and((started_at in (-Inf, '1785988800')), (started_at in ['1785902400', +Inf)))
-                Parts: 1/7
-                Granules: 13/19
+                Parts: 1/3
+                Granules: 13/15
               Partition
                 Keys:
                   toYYYYMM(started_at)
@@ -127,30 +127,30 @@ postgres / btree_index / q2_wide
 ========================================================================
                                                                                               QUERY PLAN                                                                                               
 -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
- Finalize GroupAggregate  (cost=6260.95..6295.51 rows=216 width=127) (actual time=26.345..28.028 rows=5 loops=1)
+ Finalize GroupAggregate  (cost=6260.95..6295.51 rows=216 width=127) (actual time=26.428..27.422 rows=5 loops=1)
    Group Key: (CASE WHEN (start_station_id ~~ 'JC%'::text) THEN 'Jersey City'::text WHEN (start_station_id ~~ 'HB%'::text) THEN 'Hoboken'::text ELSE 'Other'::text END), member_casual
    Buffers: shared hit=2640
-   ->  Gather Merge  (cost=6260.95..6285.79 rows=216 width=127) (actual time=26.321..27.998 rows=10 loops=1)
+   ->  Gather Merge  (cost=6260.95..6285.79 rows=216 width=127) (actual time=26.400..27.388 rows=10 loops=1)
          Workers Planned: 1
          Workers Launched: 1
          Buffers: shared hit=2640
-         ->  Sort  (cost=5260.94..5261.48 rows=216 width=127) (actual time=25.010..25.010 rows=5 loops=2)
+         ->  Sort  (cost=5260.94..5261.48 rows=216 width=127) (actual time=25.263..25.263 rows=5 loops=2)
                Sort Key: (CASE WHEN (start_station_id ~~ 'JC%'::text) THEN 'Jersey City'::text WHEN (start_station_id ~~ 'HB%'::text) THEN 'Hoboken'::text ELSE 'Other'::text END), member_casual
                Sort Method: quicksort  Memory: 25kB
                Buffers: shared hit=2640
                Worker 0:  Sort Method: quicksort  Memory: 25kB
-               ->  Partial HashAggregate  (cost=5248.79..5252.57 rows=216 width=127) (actual time=24.976..24.979 rows=5 loops=2)
+               ->  Partial HashAggregate  (cost=5248.79..5252.57 rows=216 width=127) (actual time=25.241..25.244 rows=5 loops=2)
                      Group Key: CASE WHEN (start_station_id ~~ 'JC%'::text) THEN 'Jersey City'::text WHEN (start_station_id ~~ 'HB%'::text) THEN 'Hoboken'::text ELSE 'Other'::text END, member_casual
                      Batches: 1  Memory Usage: 40kB
                      Buffers: shared hit=2632
                      Worker 0:  Batches: 1  Memory Usage: 40kB
-                     ->  Parallel Seq Scan on trips  (cost=0.00..3940.49 rows=65415 width=63) (actual time=0.013..13.005 rows=55614 loops=2)
+                     ->  Parallel Seq Scan on trips  (cost=0.00..3940.49 rows=65415 width=63) (actual time=0.014..13.305 rows=55614 loops=2)
                            Filter: ((started_at >= '2026-07-31 00:00:00'::timestamp without time zone) AND (started_at < '2026-09-01 00:00:00'::timestamp without time zone))
                            Buffers: shared hit=2632
  Planning:
    Buffers: shared hit=150
- Planning Time: 0.462 ms
- Execution Time: 28.123 ms
+ Planning Time: 0.427 ms
+ Execution Time: 27.476 ms
 (24 rows)
 
 

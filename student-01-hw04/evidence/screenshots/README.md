@@ -12,6 +12,8 @@ terminal before each command so the purpose is visible inside the image.
 | `04_q2_wide_plans.png` | Wide query reads all relevant parts/granules |
 | `05_incremental_mart.png` | Empty MV target, history backfill, batch 1 and batch 2 totals |
 | `06_measurements.png` | Five raw times, median, minimum and maximum for every variant |
+| `07_mpp_distribution.png` | Four-segment distribution and skew for three candidate keys |
+| `08_clean_run.png` | The complete clean run finishes successfully |
 
 Screenshots support the committed text evidence. They do not replace it.
 
@@ -22,7 +24,7 @@ use macOS `Command + Shift + 4` after the result appears.
 
 ```bash
 clear
-echo "CHECK 01: both databases are healthy"
+echo "CHECK 01: PostgreSQL and ClickHouse are healthy"
 docker compose ps
 ```
 
@@ -30,8 +32,8 @@ docker compose ps
 
 ```bash
 clear
-echo "CHECK 02: same rows and results in PostgreSQL and ClickHouse"
-sed -n '1,34p' evidence/checks.txt
+echo "CHECK 02: PostgreSQL and ClickHouse data are equal"
+sed -n '1,20p' evidence/checks.txt
 ```
 
 ### 03 Q1 query plans
@@ -56,17 +58,34 @@ sed -n '158,248p' evidence/plans.txt | grep -E 'clickhouse /|ReadFromMergeTree|P
 
 ```bash
 clear
-echo "CHECK 05: empty MV, backfill and two new batches"
-sed -n '1,28p' evidence/load_and_mart.txt
+echo "CHECK 05: empty mart, history backfill and two new batches"
+sed -n '1,18p' evidence/load_and_mart.txt
 ```
 
 ### 06 measurements
 
 ```bash
 clear
-echo "CHECK 06: one warm-up and five measured runs"
-sed -n '1,9p' evidence/measurements.csv
+echo "CHECK 06: one warm-up, five measured runs, median reported"
+cut -d, -f1-8 evidence/measurements.csv | column -t -s,
 ```
 
-Do not include the editor tab bar in the image. Save the six PNG files in this
-folder using the suggested names above.
+### 07 MPP distribution
+
+```bash
+clear
+echo "CHECK 07: simulated four-segment MPP distribution"
+cat evidence/mpp_distribution.txt
+echo
+echo "Conclusion: trip_key gives the most balanced distribution"
+```
+
+### 08 clean run
+
+```bash
+clear
+echo "CHECK 08: complete clean run finished successfully"
+grep -E 'Removing only|Source SHA-256|Total source rows|Mart rows immediately|Full-grain check|All checks finished successfully' evidence/clean_run.txt
+```
+
+Save the eight PNG files in this folder using the suggested names above.

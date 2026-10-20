@@ -123,10 +123,10 @@ date range and groups by area and rider type.
 
 | System / structure | Five times, ms | Median | Min–max | Rows read | Bytes read |
 |---|---|---:|---:|---:|---:|
-| PostgreSQL B-tree | 0.546; 0.778; 0.390; 0.389; 0.435 | 0.435 | 0.389–0.778 | 165 result rows from index scan | 136 cached blocks |
-| CH station/time order | 4; 5; 4; 3; 3 | 4 | 3–5 | 16,384 | 377,237 |
-| CH trip-key order | 6; 9; 7; 11; 7 | 7 | 6–11 | 111,207 | 2,575,560 |
-| CH daily mart | 3; 4; 3; 3; 3 | 3 | 3–4 | 4,846 | 175,906 |
+| PostgreSQL B-tree | 0.494; 0.415; 0.398; 0.434; 0.392 | 0.415 | 0.392–0.494 | 165 result rows from index scan | 136 cached blocks |
+| CH station/time order | 4; 4; 4; 4; 4 | 4 | 4–4 | 16,384 | 377,237 |
+| CH trip-key order | 7; 7; 7; 6; 6 | 7 | 6–7 | 111,207 | 2,575,560 |
+| CH daily mart | 4; 3; 2; 4; 2 | 3 | 2–4 | 4,846 | 175,906 |
 
 The station/time order read 6.8 times fewer rows and bytes than the trip-key
 order. Its plan selected 2 of 13 August granules. The trip-key primary index
@@ -141,10 +141,10 @@ The mart had the lowest ClickHouse median at 3 ms.
 
 | System / structure | Five times, ms | Median | Min–max | Rows read | Bytes read |
 |---|---|---:|---:|---:|---:|
-| PostgreSQL | 28.123; 26.317; 22.668; 23.607; 23.670 | 23.670 | 22.668–28.123 | Parallel sequential scan | 2,640 cached blocks |
-| CH station/time order | 17; 18; 13; 15; 19 | 17 | 13–19 | 111,227 | 2,561,678 |
-| CH trip-key order | 15; 33; 15; 18; 14 | 15 | 14–33 | 111,227 | 2,564,462 |
-| CH daily mart | 5; 5; 7; 10; 4 | 5 | 4–10 | 6,272 | 230,325 |
+| PostgreSQL | 27.476; 22.451; 21.981; 22.316; 22.311 | 22.316 | 21.981–27.476 | Parallel sequential scan | 2,640 cached blocks |
+| CH station/time order | 14; 13; 12; 14; 12 | 13 | 12–14 | 111,227 | 2,561,678 |
+| CH trip-key order | 16; 80; 23; 16; 15 | 16 | 15–80 | 111,227 | 2,564,462 |
+| CH daily mart | 4; 3; 4; 3; 4 | 4 | 3–4 | 6,272 | 230,325 |
 
 Q2 needs almost every trip, so both detailed ClickHouse tables read all 111,227
 rows and about the same number of bytes. The sort order gives no meaningful
@@ -152,8 +152,8 @@ advantage here. PostgreSQL correctly chose a parallel sequential scan because
 an index is not useful when nearly all rows are needed.
 
 The mart read 17.7 times fewer rows and about 11.1 times fewer bytes than the
-station-ordered detailed table. Its 5 ms median was 3.4 times lower than that
-detailed-table median.
+station-ordered detailed table. Its 4 ms median was about 3.3 times lower than
+that detailed-table median.
 
 The raw times are in `evidence/measurements.csv`; full plans and environment
 settings are in `evidence/plans.txt` and
